@@ -3,6 +3,7 @@
 use FastRoute\DataGenerator;
 
 require_once "./storage/IProjectStorage.php";
+require_once "./entity/Board.php";
 
 class ProjectStorage implements IProjectStorage{
   
@@ -59,7 +60,36 @@ class ProjectStorage implements IProjectStorage{
   public function getAProject(String $projectID):Project{
     return new Project();
   }
+  
+  public function getAllProject(): array
+  {
+    return [];
+  }
 
+  public function getBoardsOfProject(String $projectID): array
+  {
+    try{
+      $query = 'select * from boards where project_id = ?';
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->execute([$projectID]);
+  
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+      if(count($result) == 0){
+        throw new Exception("Project is not exist", 400);
+      }
+      $boards = array();
+  
+      foreach($result as $row){
+        $board = new Board($row['board_id'], $row['board_name'], $projectID, $row['previous_board_id']);
+        $boards[] = $board;
+      }
+  
+      return $boards;
+
+    }catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
+  }
 
 }
