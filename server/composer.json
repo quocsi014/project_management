@@ -1,7 +1,7 @@
 {
   "require": {
     "ramsey/uuid":"4.7.5",
-    "slim/slim": "^4.13",
+    "slim/slim": "2.0",
     "slim/psr7": "^1.6"
   }
 }

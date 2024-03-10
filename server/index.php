@@ -21,4 +21,7 @@ $app->post("/v1/projects", function(Request $req, Response $res) use ($projectCo
   return $projectController->CreateProject($req, $res);
 });
 
+$app->get("/v1/projects", function(Request $req, Response $res) use ($projectController){
+  return $projectController->getAllProject($req, $res);
+});
 $app->run();
