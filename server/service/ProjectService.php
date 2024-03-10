@@ -20,9 +20,12 @@ class ProjectService{
       throw new Exception("Project name cannot be blank", 400);
     }
 
-    
     $this->store->insertAProject($project);
 
+  }
+
+  public function GetBoardsOfProject(String $projectID){
+    return $this->store->getBoardsOfProject($projectID);
   }
 
 
