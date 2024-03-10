@@ -76,14 +76,12 @@ class ProjectStorage implements IProjectStorage{
       $result = [];
       foreach($projects as $projectData){
         $project = new Project( $projectData['project_id'],
-        $projectData['name'],
+        $projectData['project_name'],
         $projectData['description'],
-        $projectData['create_at'], 
+        "",
         new DateTime($projectData['create_at']));
-
-        $result[] = $project; // thêm project vào mảng
+        $result[] = $project; // thêm project vào mảng   
       };
-
       $this->db->getConn()->commit();
     }catch (PDOException $e){
       $this->db->getConn()->rollBack();

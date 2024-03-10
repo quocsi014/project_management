@@ -70,13 +70,15 @@ class ProjectController{
     $offset = isset($queryParams['offset']) ? (int) $queryParams['offset'] : 0;
     
     try {
-      $resutl = $this->service->getAllListProject($limit, $offset);
+      $result = $this->service->getAllListProject($limit, $offset);
+      error_log("Contents of \$result array: " . print_r($result, true));
+
       $res = $res->withStatus(200);
       $res->getBody()->write(json_encode(
         array(
           "limit" => $limit,
           "page" => $offset,
-          "projects" => $resutl
+          "projects" => $result
         )
       ));
       return $res;

@@ -26,7 +26,7 @@ class ProjectService{
   }
 
   public function getAllListProject(int $limit, int $offset){
-    $this->store->getAllProject($limit, $offset);
+    return $this->store->getAllProject($limit, $offset);
   }
 
 
