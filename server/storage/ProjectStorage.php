@@ -60,6 +60,35 @@ class ProjectStorage implements IProjectStorage{
     return new Project();
   }
 
+  public function getAllProject(int $limit, int $offset){
+    try{
+      $this->db->getConn()->beginTransaction();
 
+      $query = "select* from projects LIMIT :limit OFFSET :offset";
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
+      $stmt->bindParam(":offset", $offset, PDO::PARAM_INT);
 
+      $stmt->execute();
+
+      $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      $result = [];
+      foreach($projects as $projectData){
+        $project = new Project( $projectData['project_id'],
+        $projectData['name'],
+        $projectData['description'],
+        $projectData['create_at'], 
+        new DateTime($projectData['create_at']));
+
+        $result[] = $project; // thêm project vào mảng
+      };
+
+      $this->db->getConn()->commit();
+    }catch (PDOException $e){
+      $this->db->getConn()->rollBack();
+      throw new Exception($e->getMessage(), 500);
+    }
+    return $result;
+  }
 }

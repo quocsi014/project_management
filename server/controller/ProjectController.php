@@ -64,4 +64,25 @@ class ProjectController{
     }
   }
 
+  public function getAllProject(Request $req, Response $res){
+    $queryParams = $req->getQueryParams();
+    $limit = isset($queryParams['limit']) ? (int) $queryParams['limit'] : 10;
+    $offset = isset($queryParams['offset']) ? (int) $queryParams['offset'] : 0;
+    
+    try {
+      $resutl = $this->service->getAllListProject($limit, $offset);
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(
+        array(
+          "limit" => $limit,
+          "page" => $offset,
+          "projects" => $resutl
+        )
+      ));
+      return $res;
+    }catch(Exception $e){
+      $res = $res->withStatus(500);
+      return $res;
+    }
+  }
 }
