@@ -61,12 +61,8 @@ class ProjectStorage implements IProjectStorage{
     return new Project();
   }
   
-  public function getAllProject(): array
-  {
-    return [];
-  }
 
-  public function getAllProject(int $limit, int $offset){
+  public function getAllProject(int $limit, int $offset):array{
     try{
       $this->db->getConn()->beginTransaction();
 

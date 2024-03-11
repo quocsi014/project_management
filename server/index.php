@@ -23,10 +23,10 @@ echo "hiih";
   $app->get("/v1/projects", function(Request $req, Response $res) use ($projectController){
   return $projectController->getAllProject($req, $res);
   });
+  
+  $app->get("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($projectController){
+    return $projectController->GetBoads($req, $res);
+  });
+
   $app->run();
 ?>
-$app->get("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($projectController){
-  return $projectController->GetBoads($req, $res);
-});
-
-$app->run();
