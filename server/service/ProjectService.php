@@ -31,6 +31,12 @@ class ProjectService{
     return $this->store->getBoardsOfProject($projectID);
   }
 
-
+  public function updateAProject(Project $project){
+    if($project->getName() == ""){
+      throw new Exception("Project name cannot be blank", 400);
+    }
+    
+    return $this->store->updateAProject($project);
+  }
 
 }

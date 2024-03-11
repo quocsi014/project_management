@@ -28,5 +28,10 @@
     return $projectController->GetBoads($req, $res);
   });
 
+
+$app->put("/v1/projects/{project_id}", function (Request $req, Response $res) use ($projectController){
+  return $projectController->updateProject($req, $res);
+});
+
   $app->run();
 ?>
