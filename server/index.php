@@ -8,7 +8,7 @@
   require_once "./storage/ProjectStorage.php";
   require_once "./service/ProjectService.php";
   require_once "./controller/ProjectController.php";
-echo "hiih";
+  
   $app = AppFactory::create();
 
   $db = new PDOManager(null);

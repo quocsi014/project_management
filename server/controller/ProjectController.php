@@ -71,13 +71,13 @@ class ProjectController{
     
     try {
       $result = $this->service->getAllListProject($limit, $offset);
-      error_log("Contents of \$result array: " . print_r($result, true));
+      // error_log("Contents of \$result array: " . print_r($result, true));
 
       $res = $res->withStatus(200);
       $res->getBody()->write(json_encode(
         array(
           "limit" => $limit,
-          "page" => $offset,
+          "page" => (int)($offset / $limit) + 1,
           "projects" => $result
         )
       ));
