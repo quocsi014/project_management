@@ -5,7 +5,6 @@ interface IProjectStorage{
   public function updateAProject(Project $project);
   public function deleteAProject(String $project);
   public function getAProject(String $projectID):Project;
-  public function getAllProject(Int $limit, int $offset);
-  public function getAllProject():array;
+  public function getAllProject(Int $limit, int $offset):array;
   public function getBoardsOfProject(String $projectID):array;
 }
