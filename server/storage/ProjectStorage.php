@@ -1,6 +1,7 @@
 <?php
 
 use FastRoute\DataGenerator;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 require_once "./storage/IProjectStorage.php";
 require_once "./entity/Board.php";
@@ -49,8 +50,18 @@ class ProjectStorage implements IProjectStorage{
 
   }
 
-  public function updateAProject(Project $project){
+  public function updateAProject(Project $project) {
+    try{
+      $query = 'UPDATE projects SET project_name = ?, description = ? WHERE project_id = ?;';
 
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->bindValue(1, $project->getName(), PDO::PARAM_STR);
+      $stmt->bindValue(2, $project->getDescription(), PDO::PARAM_STR);
+      $stmt->bindValue(3, $project->getProjectID(), PDO::PARAM_INT);
+      $stmt->execute();
+    }catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
 
   public function deleteAProject(String $project){
