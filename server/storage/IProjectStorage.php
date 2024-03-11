@@ -1,5 +1,7 @@
 <?php
 
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 interface IProjectStorage{
   public function insertAProject(Project $project);
   public function updateAProject(Project $project);

@@ -82,4 +82,39 @@ class ProjectController{
     }
   }
 
+  public function updateProject(Request $req, Response $res)
+  {
+    try{
+      $requestBody = $req->getBody()->getContents();
+      $requestBody = json_decode($requestBody, true);
+
+      if (!isset($requestBody['projectName'])) {
+        throw new Exception("Name is required", 400);
+      }
+
+      if (!isset($requestBody['description'])) {
+        throw new Exception("Description is required", 400);
+      }
+      
+      $projectName = $requestBody['projectName'];
+      $description = $requestBody['description'];
+      $projectID = $req->getAttribute('project_id');
+
+      $project = new Project($projectID, $projectName, $description,null, null);
+
+      $this->service->updateAProject($project);
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode("update successfully"));
+      return $res;
+    }catch(Exception $e){
+      if($e->getCode() == 400){
+        $res = $res->withStatus(400);
+        $res->getBody()->write($e->getMessage());
+      }else{
+        $res = $res->withStatus(500);
+        $res->getBody()->write($e->getMessage());
+      }
+      return $res;
+    }
+  }
 }
