@@ -1,4 +1,8 @@
 <?php
+namespace Storage;
+
+use PDO;
+use PDOException;
 
 class PDOManager
 {
