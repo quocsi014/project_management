@@ -1,24 +1,28 @@
 <?php
+namespace App;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
-
 require_once __DIR__ . '/vendor/autoload.php';
 
+
 use Storage\{
-  PDOManager,
+    BoardStorage,
+    PDOManager as PDOManager,
   ProjectStorage,
   MailSenderStorage
 };
 
 use Service\{
-  ProjectService,
+    BoardService,
+    ProjectService,
   MailSenderService
 };
 
 use Controller\{
-  ProjectController,
+    BoardController,
+    ProjectController,
   MailSenderController
 };
 
@@ -34,6 +38,10 @@ $mailStore = new MailSenderStorage($db);
 $mailService = new MailSenderService($mailStore);
 $mailController = new MailSenderController($mailService);
 
+$boardStore = new BoardStorage($db);
+$boardService = new BoardService($boardStore);
+$boardController = new BoardController($boardService);
+
 $app->post("/v1/projects", function (Request $req, Response $res) use ($projectController) {
   return $projectController->CreateProject($req, $res);
 });
@@ -43,7 +51,7 @@ $app->get("/v1/projects", function (Request $req, Response $res) use ($projectCo
 });
 
 $app->get("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($projectController) {
-  return $projectController->GetBoads($req, $res);
+  return $boardController->GetBoads($req, $res);
 });
 
 
