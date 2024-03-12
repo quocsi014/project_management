@@ -10,19 +10,22 @@ class UserInformation implements JsonSerializable
   private ?string $lastName;
   private ?string $jobTitle;
   private ?string $avatarURL;
+  private ?UserAccount $userAccount;
 
   public function __construct(
     ?string $userID = null,
     ?string $firstName = null,
     ?string $lastName = null,
     ?string $jobTitle = null,
-    ?string $avatarURL = null
+    ?string $avatarURL = null,
+    ?UserAccount $userAccount = null
   ) {
     $this->userID = $userID;
     $this->firstName = $firstName;
     $this->lastName = $lastName;
     $this->jobTitle = $jobTitle;
     $this->avatarURL = $avatarURL;
+    $this->userAccount = $userAccount;
   }
 
   // Getters
@@ -51,6 +54,10 @@ class UserInformation implements JsonSerializable
     return $this->avatarURL;
   }
 
+  public function getUserAccount(): ?UserAccount{
+    return $this->userAccount;
+  }
+
   // Setters
   public function setUserID(?string $userID): void
   {
@@ -77,15 +84,20 @@ class UserInformation implements JsonSerializable
     $this->avatarURL = $avatarURL;
   }
 
+  public function setUserAccount(?UserAccount $userAccount):void{
+    $this->userAccount = $userAccount;
+  }
+
   // JsonSerializable implementation
   public function jsonSerialize()
   {
     return array(
-      'userID' => $this->userID,
-      'firstName' => $this->firstName,
-      'lastName' => $this->lastName,
-      'jobTitle' => $this->jobTitle,
-      'avatarURL' => $this->avatarURL
+      'user_id' => $this->userID,
+      'first_name' => $this->firstName,
+      'last_name' => $this->lastName,
+      'job_title' => $this->jobTitle,
+      'avatar_url' => $this->avatarURL,
+      'user_account' => $this->userAccount
     );
   }
 }
