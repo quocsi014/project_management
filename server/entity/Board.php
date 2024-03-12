@@ -1,4 +1,8 @@
 <?php
+namespace Entity;
+
+use JsonSerializable; 
+
 class Board implements JsonSerializable{
 
   private ?String $board_id;

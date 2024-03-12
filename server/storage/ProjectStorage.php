@@ -1,10 +1,16 @@
 <?php
+namespace Storage;
 
 use FastRoute\DataGenerator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-require_once "./storage/IProjectStorage.php";
-require_once "./entity/Board.php";
+use PDO;
+use PDOException;
+use Exception;
+use DateTime;
+use Entity\Project;
+use Entity\Board;
+
 
 class ProjectStorage implements IProjectStorage{
   
@@ -75,6 +81,7 @@ class ProjectStorage implements IProjectStorage{
 
   public function getAllProject(int $limit, int $offset):array{
     try{
+      
       $this->db->getConn()->beginTransaction();
 
       $query = "select* from projects LIMIT :limit OFFSET :offset";

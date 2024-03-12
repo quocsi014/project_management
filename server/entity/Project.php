@@ -1,4 +1,8 @@
 <?php
+namespace Entity;
+
+use JsonSerializable; 
+use DateTime;
 
 class Project implements JsonSerializable{
   private ?String $projectID;

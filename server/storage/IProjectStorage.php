@@ -1,6 +1,9 @@
 <?php
+namespace Storage;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Entity\Project;
+
 
 interface IProjectStorage{
   public function insertAProject(Project $project);

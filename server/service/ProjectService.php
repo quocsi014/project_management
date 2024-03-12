@@ -1,6 +1,10 @@
 <?php
 
-require_once "./storage/IProjectStorage.php";
+namespace Service;
+
+use Storage\IProjectStorage;
+use Entity\Project;
+use Exception;
 
 class ProjectService{
   private IProjectStorage $store;

@@ -1,12 +1,13 @@
 <?php
+namespace Controller; 
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Ramsey\Uuid\Uuid;
-
-require_once "./service/ProjectService.php";
-require_once "./entity/Project.php";
-
+use Exception;
+use DateTime;
+use Service\ProjectService;
+use Entity\Project;
 
 class ProjectController{
 
@@ -84,6 +85,7 @@ class ProjectController{
       return $res;
     }catch(Exception $e){
       $res = $res->withStatus(500);
+      $res->getBody()->write($e->getMessage());
       return $res;
     }
   }
