@@ -19,7 +19,7 @@ class MailSenderStorage implements IMailSenderStorage{
   public function insertOTP(int $otp, string $email): void
   {
     try{
-      $query = "insert into otp values (?, ?)";
+      $query = "insert into otp (email, otp) values (?, ?)";
       $stmt = $this->db->getConn()->prepare($query);
       $stmt->execute([$email, $otp]);
     }catch(PDOException $e){

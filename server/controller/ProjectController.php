@@ -89,23 +89,7 @@ class ProjectController{
       return $res;
     }
   }
-  public function GetBoads(Request $req, Response $res){
-    try{
-      $boards = $this->service->GetBoardsOfProject($req->getAttribute('project_id'));
-      $res = $res->withStatus(200);
-      $res->getBody()->write(json_encode($boards));
-      return $res;
-    }catch(Exception $e){
-      if($e->getCode() == 400){
-        $res = $res->withStatus(400);
-        $res->getBody()->write($e->getMessage());
-      }else{
-        $res = $res->withStatus(500);
-        $res->getBody()->write($e->getMessage());
-      }
-      return $res;
-    }
-  }
+  
 
   public function updateProject(Request $req, Response $res)
   {
