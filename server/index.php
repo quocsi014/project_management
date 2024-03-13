@@ -80,4 +80,7 @@ $app->post("/v1/send_mail/otp", function (Request $req, Response $res) use ($mai
   return $mailController->sendOTP($req, $res);
 });
 
+$app->delete("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
+  return $boardController->deleteBoard($req, $res);
+});
 $app->run();

@@ -15,4 +15,8 @@ class BoardService{
   public function GetBoardsOfProject(String $projectID){
     return $this->store->getBoardsOfProject($projectID);
   }
+
+  public function deleteBoard(String $projectID){
+    $this->store->deleteBoard($projectID);
+  }
 }
