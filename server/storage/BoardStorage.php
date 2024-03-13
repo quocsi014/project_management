@@ -56,8 +56,18 @@ class BoardStorage implements IBoardStorage{
     }
   }
 
-  public function deleteBoard(int $projectID):void{
+  public function deleteBoard(String $boardID):void{
+    try{
+      $query = "DELETE FROM boards WHERE board_id = ?";
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt ->execute([$boardID]);
 
+      if($stmt->rowCount()==0){
+        throw new Exception("Board not found", 404);
+      }
+    }catch(Exception $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
 
 }
