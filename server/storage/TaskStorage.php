@@ -1,9 +1,10 @@
 <?php
+namespace Storage;
 
-use Storage\ItaskStorage;
+use Storage\ITaskStorage;
 use Entity\Task;
 
-class TaskStorage implements ItaskStorage{
+class TaskStorage implements ITaskStorage{
 
   public function inserTask(Task $task):void{
 
