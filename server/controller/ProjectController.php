@@ -126,4 +126,27 @@ class ProjectController{
       return $res;
     }
   }
+  public function  deleteProject(Request $req, Response $res)
+  {
+  $project_id = $req->getAttribute('project_id');
+  $project = new Project($project_id);
+  try {
+    $this->service->deleteAProject($project);
+    $res = $res->withStatus(200);
+    $res->getBody()->write(json_encode(
+      array(
+        "message" => "Delete successfully"
+      )
+    ));
+    return $res;
+  } catch (Exception $e) {
+    if ($e->getCode() == 404) {
+      $res = $res->withStatus(404);
+    } else {
+      $res = $res->withStatus(500);
+    }
+    $res->getBody()->write($e->getMessage());
+    return $res;
+  }
+}
 }

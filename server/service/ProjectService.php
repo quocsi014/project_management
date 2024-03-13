@@ -40,5 +40,8 @@ class ProjectService{
     
     return $this->store->updateAProject($project);
   }
-
+  public function deleteAProject(Project $project){
+    return $this->store->deleteAProject($project);
+  }
+  
 }
