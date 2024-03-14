@@ -8,7 +8,6 @@
   require_once "./storage/ProjectStorage.php";
   require_once "./service/ProjectService.php";
   require_once "./controller/ProjectController.php";
-echo "hiih";
   $app = AppFactory::create();
 
   $db = new PDOManager(null);
@@ -23,10 +22,11 @@ echo "hiih";
   $app->get("/v1/projects", function(Request $req, Response $res) use ($projectController){
   return $projectController->getAllProject($req, $res);
   });
-  
   $app->get("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($projectController){
     return $projectController->GetBoads($req, $res);
   });
-
+  $app->get("/v1/projects/{project_id}", function (Request $req, Response $res) use ($projectController){
+    return $projectController->getAProject($req, $res);
+  });
   $app->run();
 ?>
