@@ -27,8 +27,14 @@ class BoardStorage implements IBoardStorage{
 
   }
 
-  public function updatePreviuosBoard(String $previousBoardID):void{
+  public function updatePreviuosBoard(String $previousBoardID, String $boardID):void{
+    try{
+      $query1 = "UPDATE `boards` SET `previous_board_id` = ? WHERE board_id = ?";
 
+
+    }catch(Exception $e){
+      
+    }
   }
 
   public function getBoardsOfProject(int $projectID):array{

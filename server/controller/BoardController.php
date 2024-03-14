@@ -30,4 +30,8 @@ class BoardController{
       return $res;
     }
   }
+
+  public function changeWorkflow(Request $req, Response $res){
+    
+  }
 }
