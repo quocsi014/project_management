@@ -58,7 +58,25 @@ class ProjectStorage implements IProjectStorage{
   }
 
   public function getAProject(String $projectID):Project{
-    return new Project();
+    try {
+      $query = 'select* from projects where project_id = ?';
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->execute([$projectID]);
+
+      $projectData = $stmt->fetch(PDO::FETCH_ASSOC);
+      if (!$projectData) {
+        
+        throw new Exception("Project not found", 404);
+    }
+
+      $project = new Project($projectData['project_id'],$projectData['project_name'],$projectData['description'],$projectData['owner_id'],new DateTime($projectData['create_at']));
+
+      return $project;
+
+
+    } catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
   
 

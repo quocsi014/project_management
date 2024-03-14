@@ -30,7 +30,8 @@ class ProjectService{
   public function GetBoardsOfProject(String $projectID){
     return $this->store->getBoardsOfProject($projectID);
   }
-
-
+  public function getOneProject(String $projectID){
+    return $this->store->getAProject($projectID);
+  }
 
 }
