@@ -58,15 +58,28 @@ class BoardStorage implements IBoardStorage{
 
   public function deleteBoard(String $boardID):void{
     try{
-      $query = "DELETE FROM boards WHERE board_id = ?";
-      $stmt = $this->db->getConn()->prepare($query);
-      $stmt ->execute([$boardID]);
+      $this->db->getConn()->beginTransaction();
+      $query1 = "UPDATE `boards` SET `previous_board_id`= (SELECT previous_board_id FROM boards WHERE board_id = ?) 
+                  WHERE board_id = (SELECT board_id FROM boards WHERE previous_board_id = ?)";
+      $stmt1 = $this->db->getConn()->prepare($query1);
+      $stmt1->execute([$boardID, $boardID]);
 
-      if($stmt->rowCount()==0){
+      $query2 = "DELETE FROM boards WHERE board_id = ?";
+      $stmt2 = $this->db->getConn()->prepare($query2);
+      $stmt2 ->execute([$boardID]);
+
+      if($stmt2->rowCount()==0){ //không có dòng nào được xóa, không tìm thấy bảng
         throw new Exception("Board not found", 404);
       }
-    }catch(Exception $e){
-      throw new Exception($e->getMessage(), 500);
+      $this->db->getConn()->commit();
+     
+    }catch(Exception $e){ 
+      if ($e->getCode() == 404){
+        throw new Exception($e->getMessage(), 404);
+      }else{
+        $this->db->getConn()->rollBack();
+        throw new Exception($e->getMessage(), 500);
+      }
     }
   }
 
