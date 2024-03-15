@@ -17,7 +17,7 @@ class PDOManager
     if ($conn === null) {
       // Tạo kết nối nếu không được cung cấp
       try {
-        // $servername = "172.17.0.1";
+        //  $servername = "172.17.0.1";
         $servername = "127.0.0.1";
         $username = "root";
         $password = "";
