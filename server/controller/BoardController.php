@@ -33,11 +33,10 @@ class BoardController{
 
   public function deleteBoard(Request $req, Response $res){
     try{
-      $this->service->deleteBoard($req->getAttribute('board_id'));
+      $queryParams = $req->getQueryParams();
+      $this->service->deleteBoard($queryParams['board_id']);
       $res = $res->withStatus(200);
-      $res->getBody()->write(json_encode(
-        array("message" => "delete successfully")
-      ));
+      $res->getBody()->write(json_encode(array("message" => "delete successfully")));
     }catch(Exception $e){
       if ($e->getCode() == 404){
         $res = $res->withStatus(404);
