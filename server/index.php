@@ -70,7 +70,6 @@ $app->get("/v1/projects", function (Request $req, Response $res) use ($projectCo
   $app->get("/v1/projects/{project_id}", function (Request $req, Response $res) use ($projectController){
     return $projectController->getAProject($req, $res);
   });
-});
 
 $app->get("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($boardController) {
   return $boardController->GetBoads($req, $res);
@@ -91,4 +90,5 @@ $app->delete("/v1/projects/{project_id}", function (Request $req, Response $res)
 $app->delete("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
   return $boardController->deleteBoard($req, $res);
 });
+
 $app->run();
