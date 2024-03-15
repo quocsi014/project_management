@@ -71,10 +71,15 @@ class BoardStorage implements IBoardStorage{
   public function deleteBoard(String $boardID):void{
     try{
       $this->db->getConn()->beginTransaction();
-      $query1 = "UPDATE `boards` SET `previous_board_id`= (SELECT previous_board_id FROM boards WHERE board_id = ?) 
-                  WHERE board_id = (SELECT board_id FROM boards WHERE previous_board_id = ?)";
+
+      $queryGetPreviousID = "select previous_board_id from boards where board_id = ?";
+      $stmtGetPre = $this->db->getConn()->prepare($queryGetPreviousID);
+      $stmtGetPre->execute([$boardID]);
+      $previousBoardID = $stmtGetPre->fetch(PDO::FETCH_ASSOC)['previous_board_id'];
+
+      $query1 = "UPDATE `boards` SET `previous_board_id`= ? WHERE previous_board_id = ?;";
       $stmt1 = $this->db->getConn()->prepare($query1);
-      $stmt1->execute([$boardID, $boardID]);
+      $stmt1->execute([$previousBoardID, $boardID]);
 
       $query2 = "DELETE FROM boards WHERE board_id = ?";
       $stmt2 = $this->db->getConn()->prepare($query2);
