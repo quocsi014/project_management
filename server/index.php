@@ -8,7 +8,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
 require_once __DIR__ . '/vendor/autoload.php';
-
+require_once "./storage/PDOManager.php";
+require_once "./storage/ProjectStorage.php";
+require_once "./service/ProjectService.php";
+require_once "./controller/ProjectController.php";
 
 use Storage\{
   BoardStorage,
@@ -66,10 +69,9 @@ $app->post("/v1/projects", function (Request $req, Response $res) use ($projectC
 
 $app->get("/v1/projects", function (Request $req, Response $res) use ($projectController) {
   return $projectController->getAllProject($req, $res);
-  });
-  $app->get("/v1/projects/{project_id}", function (Request $req, Response $res) use ($projectController){
-    return $projectController->getAProject($req, $res);
-  });
+});
+$app->get("/v1/projects/{project_id}", function (Request $req, Response $res) use ($projectController){
+  return $projectController->getAProject($req, $res);
 });
 
 $app->get("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($boardController) {
@@ -90,5 +92,8 @@ $app->delete("/v1/projects/{project_id}", function (Request $req, Response $res)
 
 $app->delete("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
   return $boardController->deleteBoard($req, $res);
+});
+$app->post("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($boardController){
+  return $boardController->addBoards($req, $res);
 });
 $app->run();

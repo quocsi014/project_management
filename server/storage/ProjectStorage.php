@@ -11,7 +11,6 @@ use DateTime;
 use Entity\Project;
 use Entity\Board;
 
-
 class ProjectStorage implements IProjectStorage{
   
   private PDOManager $db;

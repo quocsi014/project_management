@@ -2,6 +2,7 @@
 
 namespace Service;
 
+use Entity\Board;
 use Storage\IBoardStorage;
 
 class BoardService{
@@ -18,5 +19,9 @@ class BoardService{
 
   public function deleteBoard(String $projectID){
     $this->store->deleteBoard($projectID);
+  }
+
+  public function addBoards(Board $board){
+    $this->store->insertBoard($board);
   }
 }
