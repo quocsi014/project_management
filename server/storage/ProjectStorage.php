@@ -1,9 +1,16 @@
 <?php
+namespace Storage;
 
 use FastRoute\DataGenerator;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
-require_once "./storage/IProjectStorage.php";
-require_once "./entity/Board.php";
+use PDO;
+use PDOException;
+use Exception;
+use DateTime;
+use Entity\Project;
+use Entity\Board;
+
 
 class ProjectStorage implements IProjectStorage{
   
@@ -49,12 +56,34 @@ class ProjectStorage implements IProjectStorage{
 
   }
 
-  public function updateAProject(Project $project){
+  public function updateAProject(Project $project) {
+    try{
+      $query = 'UPDATE projects SET project_name = ?, description = ? WHERE project_id = ?;';
 
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->bindValue(1, $project->getName(), PDO::PARAM_STR);
+      $stmt->bindValue(2, $project->getDescription(), PDO::PARAM_STR);
+      $stmt->bindValue(3, $project->getProjectID(), PDO::PARAM_INT);
+      $stmt->execute();
+    }catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
 
-  public function deleteAProject(String $project){
+  public function deleteAProject(Project $project){
+    try{
+      $query = 'DELETE FROM projects WHERE project_id = ?;';
 
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->bindValue(1, $project->getProjectID(), PDO::PARAM_INT);
+      $stmt->execute();
+      $result = $stmt->rowCount();
+      if($result == 0){
+        throw new Exception("not found", 404);
+      }
+    }catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
 
   public function getAProject(String $projectID):Project{
@@ -82,6 +111,7 @@ class ProjectStorage implements IProjectStorage{
 
   public function getAllProject(int $limit, int $offset):array{
     try{
+      
       $this->db->getConn()->beginTransaction();
 
       $query = "select* from projects LIMIT :limit OFFSET :offset";
@@ -109,31 +139,6 @@ class ProjectStorage implements IProjectStorage{
     return $result;
   }
   
-  public function getBoardsOfProject(String $projectID): array
-  {
-    try{
-      $query = 'select * from boards where project_id = ?';
-      $stmt = $this->db->getConn()->prepare($query);
-      $stmt->execute([$projectID]);
-  
-      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-      if(count($result) == 0){
-        throw new Exception("Project is not exist", 400);
-      }
-      $boards = array();
-  
-      foreach($result as $row){
-        $board = new Board($row['board_id'], $row['board_name'], $projectID, $row['previous_board_id']);
-        $boards[] = $board;
-      }
-  
-      return $boards;
-
-    }catch(PDOException $e){
-      throw new Exception($e->getMessage(), 500);
-    }
-  }
 
 
 }
