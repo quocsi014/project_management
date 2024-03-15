@@ -20,7 +20,7 @@ class PDOManager
         // $servername = "172.17.0.1";
         $servername = "127.0.0.1";
         $username = "root";
-        $password = "qwerty..";
+        $password = "";
         $this->conn = new PDO("mysql:host=$servername;port=3306;dbname=project_management", $username, $password);
         // set the PDO error mode to exception
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

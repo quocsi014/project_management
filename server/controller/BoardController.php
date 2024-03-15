@@ -32,6 +32,17 @@ class BoardController{
   }
 
   public function changeWorkflow(Request $req, Response $res){
-    
+    $body = $req->getBody()->getContents();
+    $data = json_decode($body);
+    try{
+      $this->service->updatePreviuosBoard($req->getAttribute('board_id'), $data->previous_board_id);
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(8));
+    }catch(Exception $e){
+      
+      $res = $res->withStatus(500);
+      $res->getBody()->write($e->getMessage());
+    }
+    return $res;
   }
 }

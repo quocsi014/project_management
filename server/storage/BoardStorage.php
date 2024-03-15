@@ -26,13 +26,30 @@ class BoardStorage implements IBoardStorage{
   public function updateBoard(Board $board):void{
 
   }
+  // public function updatePreviuosBoard(String $previousBoardID):void{
 
-  public function updatePreviuosBoard(String $previousBoardID, String $boardID):void{
+  // }
+  public function updatePreviuosBoard( String $boardID, String $newpreviousBoardID):void{
     try{
-      $query1 = "UPDATE `boards` SET `previous_board_id` = ? WHERE board_id = ?";
+      $query1 = "SELECT board_id FROM `boards` WHERE previous_board_id = ?";
+      $stmt1 = $this->db->getConn()->prepare($query1);
+      $stmt1->execute([$newpreviousBoardID]);
 
+      $result1 = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
+      
+      $parent = array();
+      foreach($result1 as $row){
+        // Khởi tạo mảng $row1 trong vòng lặp foreach
+        $row1 = array();
+        // Ghi nhận giá trị của $row['board_id'] vào mảng $row1
+        $row1['board_id'] = $row['board_id'];
+        $row1['previous_board_id'] = $newpreviousBoardID;
+        $parent[] = $row1;
+      }
+      throw new Exception($parent[0]["board_id"], 400);
     }catch(Exception $e){
+      throw new Exception($e->getMessage(), 400);
       
     }
   }
