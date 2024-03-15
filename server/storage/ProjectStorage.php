@@ -70,12 +70,41 @@ class ProjectStorage implements IProjectStorage{
     }
   }
 
-  public function deleteAProject(String $project){
+  public function deleteAProject(Project $project){
+    try{
+      $query = "DELETE FROM projects WHERE project_id = ?;";
 
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->bindValue(1, $project->getProjectID(), PDO::PARAM_STR);
+      $stmt->execute();
+      $result = $stmt->rowCount();
+      if($result == 0){
+        throw new Exception("not found", 404);
+      }
+    }catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
 
   public function getAProject(String $projectID):Project{
-    return new Project();
+    try {
+      $query = 'select* from projects where project_id = ?';
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->execute([$projectID]);
+
+      $projectData = $stmt->fetch(PDO::FETCH_ASSOC);
+      if (!$projectData) {
+        throw new Exception("Project not found", 404);
+      }
+
+      $project = new Project($projectData['project_id'],$projectData['project_name'],$projectData['description'],$projectData['owner_id'],new DateTime($projectData['create_at']));
+
+      return $project;
+
+
+    } catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
   
 

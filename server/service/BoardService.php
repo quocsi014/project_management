@@ -19,4 +19,7 @@ class BoardService{
   public function  updatePreviuosBoard(String $boardID, ?String $preID, ?String $newpreviousBoardID){
     $this->store->updatePreviuosBoard($boardID, $preID, $newpreviousBoardID);
   }
+  public function deleteBoard(String $projectID){
+    $this->store->deleteBoard($projectID);
+  }
 }

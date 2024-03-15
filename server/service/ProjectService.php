@@ -31,7 +31,10 @@ class ProjectService{
   public function getAllListProject(int $limit, int $offset){
     return $this->store->getAllProject($limit, $offset);
   }
-  
+
+  public function getOneProject(String $projectID){
+    return $this->store->getAProject($projectID);
+  }
 
   public function updateAProject(Project $project){
     if($project->getName() == ""){
@@ -40,5 +43,8 @@ class ProjectService{
     
     return $this->store->updateAProject($project);
   }
-
+  public function deleteAProject(Project $project){
+    return $this->store->deleteAProject($project);
+  }
+  
 }
