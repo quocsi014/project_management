@@ -16,7 +16,7 @@ class BoardService{
     return $this->store->getBoardsOfProject($projectID);
   }
 
-  public function  updatePreviuosBoard(String $newpreviousBoardID, String $boardID){
-    $this->store->updatePreviuosBoard($newpreviousBoardID, $boardID);
+  public function  updatePreviuosBoard(String $boardID, ?String $preID, ?String $newpreviousBoardID){
+    $this->store->updatePreviuosBoard($boardID, $preID, $newpreviousBoardID);
   }
 }
