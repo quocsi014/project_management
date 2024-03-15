@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App;
 
 use Psr\Http\Message\ResponseInterface as Response;
@@ -65,6 +66,10 @@ $app->post("/v1/projects", function (Request $req, Response $res) use ($projectC
 
 $app->get("/v1/projects", function (Request $req, Response $res) use ($projectController) {
   return $projectController->getAllProject($req, $res);
+  });
+  $app->get("/v1/projects/{project_id}", function (Request $req, Response $res) use ($projectController){
+    return $projectController->getAProject($req, $res);
+  });
 });
 
 $app->get("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($boardController) {
