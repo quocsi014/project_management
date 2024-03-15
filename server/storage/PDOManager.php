@@ -1,4 +1,8 @@
 <?php
+namespace Storage;
+
+use PDO;
+use PDOException;
 
 class PDOManager
 {
@@ -13,10 +17,9 @@ class PDOManager
     if ($conn === null) {
       // Tạo kết nối nếu không được cung cấp
       try {
-        // $servername = "172.17.0.1";
+        //  $servername = "172.17.0.1";
         $servername = "127.0.0.1";
         $username = "root";
-        // $password = "qwerty..";
         $password = "";
         $this->conn = new PDO("mysql:host=$servername;port=3306;dbname=project_management", $username, $password);
         

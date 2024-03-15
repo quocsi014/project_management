@@ -1,11 +1,15 @@
 <?php
+namespace Entity;
+
+use JsonSerializable; 
+use DateTime;
 
 class Project implements JsonSerializable{
-  private String $projectID;
-  private String $name;
+  private ?String $projectID;
+  private ?String $name;
   private ?String $description;
-  private String $ownerID;
-  private DateTime $createAt;
+  private ?String $ownerID;
+  private ?DateTime $createAt;
 
   public function __construct($projectID = null, $name = null, $description = null, $ownerID = null, $createAt = null){
     $this->projectID = $projectID;

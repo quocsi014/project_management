@@ -1,12 +1,13 @@
 <?php
+namespace Controller; 
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Ramsey\Uuid\Uuid;
-
-require_once "./service/ProjectService.php";
-require_once "./entity/Project.php";
-
+use Exception;
+use DateTime;
+use Service\ProjectService;
+use Entity\Project;
 
 class ProjectController{
 
@@ -71,27 +72,47 @@ class ProjectController{
     
     try {
       $result = $this->service->getAllListProject($limit, $offset);
-      error_log("Contents of \$result array: " . print_r($result, true));
 
       $res = $res->withStatus(200);
       $res->getBody()->write(json_encode(
         array(
           "limit" => $limit,
-          "page" => $offset,
+          "page" => (int)($offset / $limit) + 1,
           "projects" => $result
         )
       ));
       return $res;
     }catch(Exception $e){
       $res = $res->withStatus(500);
+      $res->getBody()->write($e->getMessage());
       return $res;
     }
   }
-  public function GetBoads(Request $req, Response $res){
+  
+
+  public function updateProject(Request $req, Response $res)
+  {
     try{
-      $boards = $this->service->GetBoardsOfProject($req->getAttribute('project_id'));
+      $requestBody = $req->getBody()->getContents();
+      $requestBody = json_decode($requestBody, true);
+
+      if (!isset($requestBody['projectName'])) {
+        throw new Exception("Name is required", 400);
+      }
+
+      if (!isset($requestBody['description'])) {
+        throw new Exception("Description is required", 400);
+      }
+      
+      $projectName = $requestBody['projectName'];
+      $description = $requestBody['description'];
+      $projectID = $req->getAttribute('project_id');
+
+      $project = new Project($projectID, $projectName, $description,null, null);
+
+      $this->service->updateAProject($project);
       $res = $res->withStatus(200);
-      $res->getBody()->write(json_encode($boards));
+      $res->getBody()->write(json_encode("update successfully"));
       return $res;
     }catch(Exception $e){
       if($e->getCode() == 400){
@@ -104,6 +125,7 @@ class ProjectController{
       return $res;
     }
   }
+
   public function getAProject(Request $req, Response $res){
     try {
       $result = $this->service->getOneProject($req->getAttribute('project_id'));
@@ -125,4 +147,28 @@ class ProjectController{
       return $res;
     }
   }
+  
+  public function  deleteProject(Request $req, Response $res)
+  {
+  $project_id = $req->getAttribute('project_id');
+  $project = new Project($project_id);
+  try {
+    $this->service->deleteAProject($project);
+    $res = $res->withStatus(200);
+    $res->getBody()->write(json_encode(
+      array(
+        "message" => "Delete successfully"
+      )
+    ));
+    return $res;
+  } catch (Exception $e) {
+    if ($e->getCode() == 404) {
+      $res = $res->withStatus(404);
+    } else {
+      $res = $res->withStatus(500);
+    }
+    $res->getBody()->write($e->getMessage());
+    return $res;
+  }
+}
 }

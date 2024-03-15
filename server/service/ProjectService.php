@@ -1,6 +1,10 @@
 <?php
 
-require_once "./storage/IProjectStorage.php";
+namespace Service;
+
+use Storage\IProjectStorage;
+use Entity\Project;
+use Exception;
 
 class ProjectService{
   private IProjectStorage $store;
@@ -30,8 +34,16 @@ class ProjectService{
   public function GetBoardsOfProject(String $projectID){
     return $this->store->getBoardsOfProject($projectID);
   }
-  public function getOneProject(String $projectID){
-    return $this->store->getAProject($projectID);
-  }
 
+  public function updateAProject(Project $project){
+    if($project->getName() == ""){
+      throw new Exception("Project name cannot be blank", 400);
+    }
+    
+    return $this->store->updateAProject($project);
+  }
+  public function deleteAProject(Project $project){
+    return $this->store->deleteAProject($project);
+  }
+  
 }
