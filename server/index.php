@@ -8,10 +8,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once "./storage/PDOManager.php";
-require_once "./storage/ProjectStorage.php";
-require_once "./service/ProjectService.php";
-require_once "./controller/ProjectController.php";
 
 use Storage\{
   BoardStorage,
