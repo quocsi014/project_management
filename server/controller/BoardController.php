@@ -70,7 +70,7 @@ class BoardController{
       $projectID = $req->getAttribute('project_id');
       $boards = new Board($boardId, $data->board_name, $projectID, $data->previous_board_id);
 
-      $this->service->addBoards($boards);
+    $this->service->addBoards($boards);
       $res = $res->withStatus(200);
       $res->getBody()->write(json_encode(
         array("message" => "create successfully")

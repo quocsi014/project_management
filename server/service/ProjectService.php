@@ -31,8 +31,9 @@ class ProjectService{
   public function getAllListProject(int $limit, int $offset){
     return $this->store->getAllProject($limit, $offset);
   }
-  public function GetBoardsOfProject(String $projectID){
-    return $this->store->getBoardsOfProject($projectID);
+
+  public function getOneProject(String $projectID){
+    return $this->store->getAProject($projectID);
   }
 
   public function updateAProject(Project $project){
