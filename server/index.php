@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App;
 
 use Psr\Http\Message\ResponseInterface as Response;
@@ -65,7 +66,10 @@ $app->post("/v1/projects", function (Request $req, Response $res) use ($projectC
 
 $app->get("/v1/projects", function (Request $req, Response $res) use ($projectController) {
   return $projectController->getAllProject($req, $res);
-});
+  });
+  $app->get("/v1/projects/{project_id}", function (Request $req, Response $res) use ($projectController){
+    return $projectController->getAProject($req, $res);
+  });
 
 $app->get("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($boardController) {
   return $boardController->GetBoads($req, $res);
@@ -78,6 +82,13 @@ $app->put("/v1/projects/{project_id}", function (Request $req, Response $res) us
 
 $app->post("/v1/send_mail/otp", function (Request $req, Response $res) use ($mailController) {
   return $mailController->sendOTP($req, $res);
+});
+$app->delete("/v1/projects/{project_id}", function (Request $req, Response $res) use ($projectController) {
+  return $projectController->deleteProject($req, $res);
+});
+
+$app->delete("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
+  return $boardController->deleteBoard($req, $res);
 });
 
 $app->put("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
