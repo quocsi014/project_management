@@ -35,12 +35,16 @@ class BoardController{
     $body = $req->getBody()->getContents();
     $data = json_decode($body);
     try{
-      $this->service->updatePreviuosBoard($req->getAttribute('board_id'), $data->previous_board_id);
+      $this->service->updatePreviuosBoard($data->board_id, $data->previous_board_id, $data->new_previous_id);
+      $boards = $this->service->GetBoardsOfProject($req->getAttribute('project_id'));
+
       $res = $res->withStatus(200);
-      $res->getBody()->write(json_encode(8));
+      $res->getBody()->write(json_encode(array("message"=> "update successfully", 
+                                                "project" => $boards)));
     }catch(Exception $e){
-      
-      $res = $res->withStatus(500);
+      if($e->getCode()==404){
+        $res = $res->withStatus(404);
+      }else $res = $res->withStatus(500);
       $res->getBody()->write($e->getMessage());
     }
     return $res;
