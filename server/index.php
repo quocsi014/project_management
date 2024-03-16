@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 require_once __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/controllers/TaskController.php';
+// require __DIR__ . '/controllers/TaskController.php';
 
 use Storage\{
   BoardStorage,
@@ -96,8 +96,8 @@ $app->post("/v1/projects/{project_id}/boards", function (Request $req, Response 
 $app->put("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
   return $boardController->changeWorkflow($req, $res);
 });
-$app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request $req, Response $res) use ($TaskController){
-  return $TaskController->updateStatus($req, $res);
+$app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request $req, Response $res) use ($taskController){
+  return $taskController->updateStatus($req, $res);
 });
 
 
