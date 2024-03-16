@@ -90,6 +90,10 @@ $app->delete("/v1/projects/{project_id}/boards/{board_id}", function (Request $r
   return $boardController->deleteBoard($req, $res);
 });
 
+$app->put("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
+  return $boardController->changeWorkflow($req, $res);
+});
+
 
 
 $app->run();
