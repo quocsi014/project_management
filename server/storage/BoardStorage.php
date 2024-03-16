@@ -21,7 +21,8 @@ class BoardStorage implements IBoardStorage{
 
   public function insertBoard(Board $board):void{
     try{
-      $query = 'INSERT INTO boards (board_id ,board_name, product_id, previous_board_id) VALUES (?, ?, ?, ?);';
+      $this->db->getConn()->beginTransaction();
+      $query = 'INSERT INTO boards (board_id ,board_name, project_id, previous_board_id) VALUES (?, ?, ?, ?);';
       $stmt = $this->db->getConn()->prepare($query);
       $stmt->bindValue(1, $board->getBoardId(), PDO::PARAM_STR);
       $stmt->bindValue(2, $board->getName(), PDO::PARAM_STR);
@@ -36,6 +37,7 @@ class BoardStorage implements IBoardStorage{
   }
 
   public function updateBoard(Board $board):void{
+
 
   }
 
