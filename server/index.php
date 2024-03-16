@@ -92,4 +92,5 @@ $app->delete("/v1/projects/{project_id}/boards/{board_id}", function (Request $r
 $app->post("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($boardController){
   return $boardController->addBoards($req, $res);
 });
+
 $app->run();

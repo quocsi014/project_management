@@ -52,37 +52,46 @@ class BoardController{
     return $res;
   }
 
-  public function addBoards(Request $req, Response $res)
-  {
-    try{
+  public function addBoards(Request $req, Response $res){
       $body = $req->getBody()->getContents();
       $data = json_decode($body);
-
+      if(!isset($data->previous_board_id)) {
+        $data->previous_board_id = null;
+      }
+      if (!isset($data->board_id)) {
+        $res = $res->withStatus(400);
+        $res->getBody()->write("Board id is required");
+        return $res;
+      }
       if (!isset($data->board_name)) {
-        throw new Exception("Board name is required", 400);
+        $res = $res->withStatus(400);
+        $res->getBody()->write("Board name is required");
+        return $res;
       }
-
-      if (!isset($data->previous_board_id)) {
-        throw new Exception("Previous board is required", 400);
+      if (!isset($data->project_id)) {
+      $res = $res->withStatus(400);
+      $res->getBody()->write("Project ID là required");
+      return $res;
       }
-
-      $boardId = Uuid::uuid4();
-      $projectID = $req->getAttribute('project_id');
-      $boards = new Board($boardId, $data->board_name, $projectID, $data->previous_board_id);
-
-    $this->service->addBoards($boards);
-      $res = $res->withStatus(200);
-      $res->getBody()->write(json_encode(
-        array("message" => "create successfully")
+      $boards = new Board($data->board_id, $data->board_name, $data->project_id, $data->previous_board_id);
+      try{
+        $this->service->addBoards($boards);
+        $res = $res->withStatus(200);
+        $res->getBody()->write(json_encode(
+        array("message" => "create successfully",
+        "boards" => $boards
+        )
       ));
-    } catch(Exception $e) {
-      if ($e->getCode() == 404){
-        $res = $res->withStatus(404);
+      return $res;
+    } catch(Exception $e){
+      if($e->getCode() == 400){
+        $res = $res->withStatus(400);
         $res->getBody()->write($e->getMessage());
       }else{
         $res = $res->withStatus(500);
         $res->getBody()->write($e->getMessage());
       }
+      return $res;
     }
-  }
+}
 }
