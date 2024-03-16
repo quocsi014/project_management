@@ -17,10 +17,9 @@ class PDOManager
     if ($conn === null) {
       // Tạo kết nối nếu không được cung cấp
       try {
-        //  $servername = "172.17.0.1";
-        $servername = "localhost";
-        $username = "root"; // Replace with your actual username
-        $password = ""; // Replace with your actual password
+         $servername = "localhost";
+        $username = "root";
+        $password = "";
         $this->conn = new PDO("mysql:host=$servername;port=33066;dbname=project_management", $username, $password);
         
         // set the PDO error mode to exception
