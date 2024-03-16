@@ -13,7 +13,6 @@ class Task implements JsonSerializable
   private ?string $assignedUserID;
   private ?string $boardID;
   private ?DateTime $createdAt;
-
   public function __construct(
     ?string $taskID = null,
     ?string $name = null,

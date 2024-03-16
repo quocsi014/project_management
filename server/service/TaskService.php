@@ -13,7 +13,7 @@ class TaskService{
     $this->store = $store;
   }
   public function updateStatus(String $boardID):void{
-  
-
+    
+    $this->store->updateStatus($boardID);
   }
 }
