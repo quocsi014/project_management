@@ -6,6 +6,8 @@ namespace App;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Google\Client as Google_Client;
+use Google\Service\Oauth2 as Google_Service_Oauth2;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -90,5 +92,48 @@ $app->delete("/v1/projects/{project_id}", function (Request $req, Response $res)
 $app->delete("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
   return $boardController->deleteBoard($req, $res);
 });
+
+
+$app->get('/login/google', function (Request $request, Response $response, array $args) {
+  // Thiết lập thông tin ứng dụng Google OAuth
+  $client = new Google_Client();
+  $client->setClientId('507687248206-h1lufgl7cirssocn1pr8rpb73hq4qajm.apps.googleusercontent.com');
+  $client->setClientSecret('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');
+  $client->setRedirectUri('http://localhost:8080/login/google/callback'); // Thay PORT bằng cổng mà ứng dụng của bạn đang chạy
+  $client->addScope(Google_Service_Oauth2::USERINFO_EMAIL);
+  $client->addScope(Google_Service_Oauth2::USERINFO_PROFILE);
+
+  // Chuyển hướng người dùng đến trang xác thực Google
+  $authUrl = $client->createAuthUrl();
+  return $response->withHeader('Location', $authUrl)->withStatus(302);
+});
+
+$app->get('/login/google/callback', function (Request $request, Response $response, array $args) {
+  // Xác thực callback từ Google
+  $client = new Google_Client();
+  $client->setClientId('YOUR_CLIENT_ID');
+  $client->setClientSecret('YOUR_CLIENT_SECRET');
+  $client->setRedirectUri('http://localhost:8080/login/google/callback'); // Thay PORT bằng cổng mà ứng dụng của bạn đang chạy
+
+  $queryParams = $request->getQueryParams();
+  $code = $queryParams['code'] ?? null;
+
+  if ($code) {
+      $client->authenticate($code);
+      $access_token = $client->getAccessToken();
+
+      // Sử dụng token để lấy thông tin người dùng từ Google API
+      $oauth2 = new Google_Service_Oauth2($client);
+      $userInfo = $oauth2->userinfo->get();
+
+      // Xử lý thông tin người dùng ở đây, ví dụ: đăng nhập hoặc đăng ký người dùng
+
+      return $response->withHeader('Location', '/profile')->withStatus(302); // Chuyển hướng người dùng sau khi đăng nhập thành công
+  } else {
+      // Xử lý khi không có mã truy cập được trả về từ Google
+      return $response->withHeader('Location', '/login')->withStatus(302);
+  }
+});
+
 
 $app->run();
