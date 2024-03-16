@@ -33,9 +33,6 @@ class BoardStorage implements IBoardStorage{
       $stmt1 = $this->db->getConn()->prepare($query1);
       $stmt1->execute([$var1]);
       $boardID_result = $stmt1->fetchAll(PDO::FETCH_ASSOC);
-      if($stmt1->rowCount()==0){
-        throw new Exception("No Board Found", 404);
-      }
       //duyệt qua tất cả các board có cùng previous_board cần thay đổi
       foreach($boardID_result as $board_id){
         $query2 = "UPDATE `boards` SET previous_board_id = ? WHERE board_id = ?"; // thay đổi preID với giá trị truyền vào

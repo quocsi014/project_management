@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Entity\Board;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Service\BoardService;
@@ -36,7 +37,7 @@ class BoardController{
     $data = json_decode($body);
     try{
       $this->service->updatePreviuosBoard($data->board_id, $data->previous_board_id, $data->new_previous_id);
-      $boards = $this->service->GetBoardsOfProject($req->getAttribute('project_id'));
+      $boards = new Board($data->board_id, $data->name, $data->project_id, $data->new_previous_id);
 
       $res = $res->withStatus(200);
       $res->getBody()->write(json_encode(array("message"=> "update successfully", 
