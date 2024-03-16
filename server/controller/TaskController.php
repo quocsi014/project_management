@@ -2,11 +2,12 @@
 
 namespace Controller;
 
-use Entity\Board;
+use Entity\Task;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Service\TaskService;
 use Exception;
+use DateTime;
 
 class TaskController{
   private TaskService $service;
@@ -14,27 +15,27 @@ class TaskController{
   {
     $this->service = $service;
   }
-  public function updateStatus(Request $req, Response $res): Response
+  public function updateStatus(Request $req, Response $res)
 {
-    try {  
+    try {
+         
         $requestBody = $req->getBody()->getContents();
         $requestBody = json_decode($requestBody, true);
-        $requestBody = $req->getParsedBody(); 
         if (!isset($requestBody['board_id'])) {
             throw new Exception("Board ID is required", 400);
         }
-        $boardId = $requestBody['board_id'];
-        $taskId = $req->getAttribute('task_id'); 
-        $projectId = $req->getAttribute('project_id'); 
+        $boardID = $requestBody['board_id'];
+        $taskID = $req->getAttribute('task_id'); 
+        $projectID = $req->getAttribute('project_id'); 
 
-        // Create potential Board object (if needed)
-        // $board = new Board($projectId, $taskId, $boardId);
-        // logic using $boardId, $taskId, and $projectId)
-
-        $this->service->updateStatus($boardId);
-
+        $task = new Task($taskID, null, $projectID, null, $boardID, null);
+        $this->service->updateStatus($boardID);
+        
         $res = $res->withStatus(200);
-        $res->getBody()->write(json_encode("Status updated successfully"));
+        $res->getBody()->write(json_encode(array("Status updated successfully",
+         "boardID" => $boardID
+        )
+      ));
         return $res;
     } catch(Exception $e){
       if($e->getCode() == 400){
