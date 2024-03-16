@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Entity\Board;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Service\BoardService;
@@ -31,6 +32,25 @@ class BoardController{
     }
   }
 
+  public function changeWorkflow(Request $req, Response $res){
+    $body = $req->getBody()->getContents();
+    $data = json_decode($body);
+    try{
+      $this->service->updatePreviuosBoard($data->board_id, $data->previous_board_id, $data->new_previous_id);
+      $boards = new Board($data->board_id, $data->name, $data->project_id, $data->new_previous_id);
+
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(array("message"=> "update successfully", 
+                                                "project" => $boards)));
+    }catch(Exception $e){
+      if($e->getCode()==404){
+        $res = $res->withStatus(404);
+      }else $res = $res->withStatus(500);
+      $res->getBody()->write($e->getMessage());
+    }
+    return $res;
+  }
+  
   public function deleteBoard(Request $req, Response $res){
     try{
       $this->service->deleteBoard($req->getAttribute('board_id'));
