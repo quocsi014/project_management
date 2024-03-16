@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Service\BoardService;
 use Exception;
+use Ramsey\Uuid\Nonstandard\Uuid;
 
 class BoardController{
   private BoardService $service;
@@ -69,4 +70,47 @@ class BoardController{
     }
     return $res;
   }
+
+  public function addBoards(Request $req, Response $res){
+      $body = $req->getBody()->getContents();
+      $data = json_decode($body);
+      if(!isset($data->previous_board_id)) {
+        $data->previous_board_id = null;
+      }
+      if (!isset($data->board_id)) {
+        $res = $res->withStatus(400);
+        $res->getBody()->write("Board id is required");
+        return $res;
+      }
+      if (!isset($data->board_name)) {
+        $res = $res->withStatus(400);
+        $res->getBody()->write("Board name is required");
+        return $res;
+      }
+      if (!isset($data->project_id)) {
+      $res = $res->withStatus(400);
+      $res->getBody()->write("Project ID là required");
+      return $res;
+      }
+      $boards = new Board($data->board_id, $data->board_name, $data->project_id, $data->previous_board_id);
+      try{
+        $this->service->addBoards($boards);
+        $res = $res->withStatus(200);
+        $res->getBody()->write(json_encode(
+        array("message" => "create successfully",
+        "boards" => $boards
+        )
+      ));
+      return $res;
+    } catch(Exception $e){
+      if($e->getCode() == 400){
+        $res = $res->withStatus(400);
+        $res->getBody()->write($e->getMessage());
+      }else{
+        $res = $res->withStatus(500);
+        $res->getBody()->write($e->getMessage());
+      }
+      return $res;
+    }
+}
 }

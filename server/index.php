@@ -8,7 +8,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 require_once __DIR__ . '/vendor/autoload.php';
 
-
 use Storage\{
   BoardStorage,
   PDOManager as PDOManager,
@@ -88,6 +87,9 @@ $app->delete("/v1/projects/{project_id}", function (Request $req, Response $res)
 
 $app->delete("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
   return $boardController->deleteBoard($req, $res);
+});
+$app->post("/v1/projects/{project_id}/boards", function (Request $req, Response $res) use ($boardController){
+  return $boardController->addBoards($req, $res);
 });
 
 $app->put("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
