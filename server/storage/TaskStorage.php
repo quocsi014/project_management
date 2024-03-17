@@ -46,13 +46,13 @@ class TaskStorage implements ITaskStorage{
   }
 }
 
-  public function updateAssignedUSer(String $userID,String $taskID):void{
+  public function updateAssignedUSer(String $assignedUserID,String $taskID):void{
     try {
      
-      $query = 'UPDATE tasks SET user_id = ? WHERE task_id = ?;'; 
+      $query = 'UPDATE tasks SET assigned_user_id = ? WHERE task_id = ?;'; 
       $stmt = $this->db->getConn()->prepare($query);
       
-      $stmt->execute([$userID,$taskID]);
+      $stmt->execute([$assignedUserID,$taskID]);
       $result = $stmt->rowCount();
       if ($result ==0)
       {

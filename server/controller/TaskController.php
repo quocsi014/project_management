@@ -54,20 +54,20 @@ class TaskController{
          
       $requestBody = $req->getBody()->getContents();
       $requestBody = json_decode($requestBody, true);
-      if (!isset($requestBody['user_id'])) {
-          throw new Exception("User ID is required", 400);
+      if (!isset($requestBody['assigned_user_id'])) {
+          throw new Exception("Assigned User ID is required", 400);
       }
-      $userID = $requestBody['user_id'];
+      $assignedUserID = $requestBody['assigned_user_id'];
       $taskID = $req->getAttribute('task_id'); 
       $projectID = $req->getAttribute('project_id'); 
 
-      $task = new Task($taskID, null, $projectID, $userID, null, null);
-      $this->service->updateStatus($userID,$taskID);
+      $task = new Task($taskID, null, $projectID, $assignedUserID,null, null);
+      $this->service->updateAssignedUSer($assignedUserID,$taskID);
       
       $res = $res->withStatus(200);
       $res->getBody()->write(json_encode(array("Assigned UserID updated successfully",
        "taskID"  => $taskID,
-       "AsigneduserID" => $userID
+       "AsigneduserID" => $assignedUserID
       )
     ));
       return $res;
