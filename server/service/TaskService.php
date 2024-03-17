@@ -16,4 +16,7 @@ class TaskService{
     
     $this->store->updateStatus($boardID,$taskID);
   }
+  public function updateAssignedUSer(String $userID, String $taskID):void{
+    $this->store->updateAssignedUSer($userID,$taskID);
+  }
 }

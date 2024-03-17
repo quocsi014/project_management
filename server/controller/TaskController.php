@@ -49,4 +49,37 @@ class TaskController{
       return $res;
     }
 }
+  public function updateAssignedUSer(Request $req, Response $res){
+    try {
+         
+      $requestBody = $req->getBody()->getContents();
+      $requestBody = json_decode($requestBody, true);
+      if (!isset($requestBody['user_id'])) {
+          throw new Exception("User ID is required", 400);
+      }
+      $userID = $requestBody['user_id'];
+      $taskID = $req->getAttribute('task_id'); 
+      $projectID = $req->getAttribute('project_id'); 
+
+      $task = new Task($taskID, null, $projectID, $userID, null, null);
+      $this->service->updateStatus($userID,$taskID);
+      
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(array("Assigned UserID updated successfully",
+       "taskID"  => $taskID,
+       "AsigneduserID" => $userID
+      )
+    ));
+      return $res;
+}catch(Exception $e){
+    if($e->getCode() == 404){
+      $res = $res->withStatus(404);
+      $res->getBody()->write($e->getMessage());
+    }else{
+      $res = $res->withStatus(500);
+      $res->getBody()->write($e->getMessage());
+    }
+    return $res;
+  }
+}
 }
