@@ -98,7 +98,7 @@ class Task implements JsonSerializable
       'taskID' => $this->taskID,
       'name' => $this->name,
       'projectID' => $this->projectID,
-      'assignedUserID' => $this->assignedUserID,
+      'assigned_user_id' => $this->assignedUserID,
       'boardID' => $this->boardID,
       'createdAt' => $this->createdAt
     );
