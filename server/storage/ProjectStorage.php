@@ -57,7 +57,6 @@ class ProjectStorage implements IProjectStorage{
   public function updateAProject(Project $project) {
     try{
       $query = 'UPDATE projects SET project_name = ?, description = ? WHERE project_id = ?;';
-
       $stmt = $this->db->getConn()->prepare($query);
       $stmt->bindValue(1, $project->getName(), PDO::PARAM_STR);
       $stmt->bindValue(2, $project->getDescription(), PDO::PARAM_STR);
