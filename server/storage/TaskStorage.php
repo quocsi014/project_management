@@ -46,9 +46,22 @@ class TaskStorage implements ITaskStorage{
   }
 }
 
-  public function updateAssignedUSer(String $userID):void{
-
+  public function updateAssignedUSer(String $userID,String $taskID):void{
+    try {
+     
+      $query = 'UPDATE tasks SET user_id = ? WHERE task_id = ?;'; 
+      $stmt = $this->db->getConn()->prepare($query);
+      
+      $stmt->execute([$userID,$taskID]);
+      $result = $stmt->rowCount();
+      if ($result ==0)
+      {
+        throw new Exception ("No Task Found",404);
+      }
+   }catch(PDOException $e){ 
+    throw new Exception($e->getMessage(),500);
   }
+}
 
   public function getTasksOfProjec(String $projectID):array{
     return [];
