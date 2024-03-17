@@ -42,6 +42,7 @@ class BoardStorage implements IBoardStorage{
           throw new Exception("No Board Found", 404);
         }
       }
+      
     }catch(Exception $e){
       throw new Exception($e->getMessage(), ($e->getCode() == 404) ? 404 : 500);
     }
