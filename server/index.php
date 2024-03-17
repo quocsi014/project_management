@@ -5,7 +5,10 @@ namespace App;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use Slim\Factory\AppFactory;oogle_Service_Oauth2;
+
+use Tuupola\Middleware\CorsMiddleware;
+
 require_once __DIR__ . '/vendor/autoload.php';
 // require __DIR__ . '/controllers/TaskController.php';
 
@@ -59,6 +62,15 @@ $userService = new UserService($userStore);
 $userController = new UserController($userService);
 
 
+$app->add(new CorsMiddleware([
+  "origin" => ["*"],
+  "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  "headers.allow" => ["Authorization", "Content-Type", "X-Requested-With"],
+  "headers.expose" => [],
+  "credentials" => true,
+  "cache" => 0,
+]));
+
 $app->post("/v1/projects", function (Request $req, Response $res) use ($projectController) {
   return $projectController->CreateProject($req, $res);
 });
@@ -98,7 +110,5 @@ $app->put("/v1/projects/{project_id}/boards/{board_id}", function (Request $req,
 });
 $app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request $req, Response $res) use ($taskController){
   return $taskController->updateStatus($req, $res);
-});
-
 
 $app->run();
