@@ -5,12 +5,12 @@ namespace App;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
-use Google\Client as Google_Client;
-use Google\Service\Oauth2 as Google_Service_Oauth2;
+use Slim\Factory\AppFactory;oogle_Service_Oauth2;
 
 use Tuupola\Middleware\CorsMiddleware;
+
 require_once __DIR__ . '/vendor/autoload.php';
+// require __DIR__ . '/controllers/TaskController.php';
 
 use Storage\{
   BoardStorage,
@@ -108,7 +108,7 @@ $app->post("/v1/projects/{project_id}/boards", function (Request $req, Response 
 $app->put("/v1/projects/{project_id}/boards/{board_id}", function (Request $req, Response $res) use ($boardController){
   return $boardController->changeWorkflow($req, $res);
 });
-
-
+$app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request $req, Response $res) use ($taskController){
+  return $taskController->updateStatus($req, $res);
 
 $app->run();
