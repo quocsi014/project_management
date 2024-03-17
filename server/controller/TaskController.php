@@ -29,15 +29,16 @@ class TaskController{
         $projectID = $req->getAttribute('project_id'); 
 
         $task = new Task($taskID, null, $projectID, null, $boardID, null);
-        $this->service->updateStatus($boardID);
+        $this->service->updateStatus($boardID,$taskID);
         
         $res = $res->withStatus(200);
         $res->getBody()->write(json_encode(array("Status updated successfully",
+         "taskID"  => $taskID,
          "boardID" => $boardID
         )
       ));
         return $res;
-    } catch(Exception $e){
+  }catch(Exception $e){
       if($e->getCode() == 400){
         $res = $res->withStatus(400);
         $res->getBody()->write($e->getMessage());
