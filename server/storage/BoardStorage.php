@@ -20,7 +20,7 @@ class BoardStorage implements IBoardStorage{
   }
 
   public function insertBoard(Board $board):void{
-    try{
+    try{  
       $this->db->getConn()->beginTransaction();
       $query = 'INSERT INTO boards (board_id ,board_name, project_id, previous_board_id) VALUES (?, ?, ?, ?);';
       $stmt = $this->db->getConn()->prepare($query);
@@ -37,6 +37,7 @@ class BoardStorage implements IBoardStorage{
   }
 
   public function updateBoard(Board $board):void{
+
 
 
   }
