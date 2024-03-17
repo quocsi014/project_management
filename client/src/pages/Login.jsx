@@ -3,7 +3,7 @@ import TextField from "../components/TextField";
 import googleLogo from "../assets/google.png"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios"
 export default function Login(){
 
   let [email, setEmail] = useState("")
@@ -20,6 +20,12 @@ export default function Login(){
 
   let navigateToRegister = ()=>{
     navigate("/register")
+  }
+
+  let googleLogin = e=>{
+    axios.get("http://localhost:8080/v1/projects").then((re)=>{
+      console.table(re.data.projects[1].create_at)
+    })
   }
 
   return (
@@ -44,7 +50,7 @@ export default function Login(){
 
         <div className="h-px bg-gray-400 w-full mt-4"></div>
 
-        <div className="mt-6 border-solid border-gray-200 border-2 py-3 px-7 rounded-full flex flex-row justify-between items-center hover:border-gray-300">
+        <div className="mt-6 border-solid border-gray-200 border-2 py-3 px-7 rounded-full flex flex-row justify-between items-center hover:border-gray-300" onClick={e=>googleLogin()}>
           <img src={googleLogo} className="w-6 mr-2" alt="" />
           <span className="font-semibold text-xl">
             Đăng nhập với tài khoản google
