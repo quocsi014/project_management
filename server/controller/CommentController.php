@@ -60,5 +60,21 @@ class CommentController{
     }
     return $res;
   }
+
+  public function deleteComment(Request $req, Response $res){
+    try{
+      $this->service->deleteComment($req->getAttribute("comment_id"));
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(
+        array("message"=>"delete successfully")
+      ));
+    }catch(Exception $e){
+      if($e->getCode()==404){
+        $res=$res->withStatus(404);
+      }else $res=$res->withStatus(500);
+      $res->getBody()->write($e->getMessage());
+    }
+    return $res;
+  }
 }
 ?>

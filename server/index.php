@@ -124,5 +124,8 @@ $app->put("/v1/projects/{project_id}/tasks/{task_id}/comments/{comment_id}", fun
   return $commentController->updateComment($req, $res);
 });
 
+$app->delete("/v1/projects/{project_id}/tasks/{task_id}/comments/{comment_id}", function (Request $req, Response $res) use ($commentController){
+  return $commentController->deleteComment($req, $res);
+});
 $app->run();
 

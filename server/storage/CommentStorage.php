@@ -30,7 +30,7 @@ class CommentStorage implements ICommentStorage{
       }
 
       $dateTimeObject = ($comment->getCreateAt() !== null) ? $comment->getCreateAt() : null;
-      
+
       $query = "UPDATE comments SET user_id=?, task_id=?, content=?, create_at=? WHERE comment_id=?";
       $stmt = $this->db->getConn()->prepare($query);
       $stmt->bindValue(1, $comment->getUserID(), PDO::PARAM_STR);
@@ -45,6 +45,24 @@ class CommentStorage implements ICommentStorage{
       }else{
         throw new Exception($e->getMessage(), 500);
       }
+    }
+  }
+
+  public function deleteComment(String $id):void{
+    try{
+      $check = $this->checkExist($id);
+      if(!$check){
+        throw new Exception("CommentID not found", 404);
+      }
+  
+      $query = "DELETE FROM `comments` WHERE comment_id = ?";
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->execute([$id]);
+    }catch(Exception $e){
+      if($e->getCode()==404){
+        throw new Exception($e->getMessage(), 404);
+      }else
+        throw new Exception($e->getMessage(), 404);
     }
   }
   

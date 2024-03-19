@@ -16,5 +16,8 @@ class CommentService{
   public function updateComment(Comment $comment){
     $this->commentStore->updateComment($comment);
   }
+  public function deleteComment(String $id){
+    $this->commentStore->deleteComment($id);
+  }
 }
 ?>
