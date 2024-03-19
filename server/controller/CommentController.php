@@ -76,5 +76,25 @@ class CommentController{
     }
     return $res;
   }
+
+  public function getCommentOfComment(Request $req, Response $res){
+    try
+    {
+      $comment = $this->service->getCommentOfTask($req->getAttribute("task_id"));
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(
+        array("message"=>"delete successfully", "comments"=>$comment)
+      ));
+    }catch(Exception $e)
+    {
+      if($e->getCode()==404)
+      {
+        $res=$res->withStatus(404);
+      }
+      else $res=$res->withStatus(500);
+      $res->getBody()->write($e->getMessage());
+    }
+    return $res;
+  }
 }
 ?>
