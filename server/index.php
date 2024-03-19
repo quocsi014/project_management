@@ -17,7 +17,8 @@ use Storage\{
   ProjectStorage,
   MailSenderStorage,
   UserStorage,
-  TaskStorage
+  TaskStorage,
+  CommentStorage
 };
 
 use Service\{
@@ -25,7 +26,8 @@ use Service\{
   ProjectService,
   MailSenderService,
   TaskService,
-  UserService
+  UserService,
+  CommentService
 };
 
 use Controller\{
@@ -33,7 +35,8 @@ use Controller\{
   ProjectController,
   MailSenderController,
   TaskController,
-  UserController
+  UserController,
+  CommentController
 };
 
 $app = AppFactory::create();
@@ -60,15 +63,18 @@ $userStore = new UserStorage($db);
 $userService = new UserService($userStore);
 $userController = new UserController($userService);
 
+$commentStore = new CommentStorage($db);
+$commentService = new CommentService($commentStore);
+$commentController = new CommentController($commentService);
 
-$app->add(new CorsMiddleware([
-  "origin" => ["*"],
-  "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  "headers.allow" => ["Authorization", "Content-Type", "X-Requested-With"],
-  "headers.expose" => [],
-  "credentials" => true,
-  "cache" => 0,
-]));
+// $app->add(new CorsMiddleware([
+//   "origin" => ["*"],
+//   "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//   "headers.allow" => ["Authorization", "Content-Type", "X-Requested-With"],
+//   "headers.expose" => [],
+//   "credentials" => true,
+//   "cache" => 0,
+// ]));
 
 $app->post("/v1/projects", function (Request $req, Response $res) use ($projectController) {
   return $projectController->CreateProject($req, $res);
@@ -112,6 +118,10 @@ $app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request 
 });
 $app->put("/v1/projects/{project_id}/tasks/{task_id}/assignments", function (Request $req, Response $res) use ($taskController){
   return $taskController->updateAssignedUSer($req, $res);
+});
+
+$app->put("/v1/projects/{project_id}/tasks/{task_id}/comments/{comment_id}", function (Request $req, Response $res) use ($commentController){
+  return $commentController->updateComment($req, $res);
 });
 
 $app->run();
