@@ -4,6 +4,8 @@ namespace Service;
 use Exception;
 
 use Storage\ITaskStorage;
+use Entity\Task;
+
 
 class TaskService{
   private ITaskStorage $store;
@@ -19,4 +21,11 @@ class TaskService{
   public function updateAssignedUSer(String $assignedUserID, String $taskID):void{
     $this->store->updateAssignedUSer($assignedUserID,$taskID);
   }
+  public function updateTask(Task $task):void{
+    if($task->getName() == ""){
+      throw new Exception("Task name cannot be blank", 400);
+    }
+    $this->store->updateTask($task);
+  }
+
 }

@@ -15,6 +15,39 @@ class TaskController{
   {
     $this->service = $service;
   }
+  public function updateTask(Request $req, Response $res)
+  {
+    
+    try{
+      $body = $req->getBody()->getContents();
+    $data = json_decode($body);
+    if (!isset($requestBody['task_id'])) {
+      throw new Exception("Task ID is required", 400);
+    }
+    if (!isset($requestBody['task_name'])) {
+      throw new Exception("Name is required", 400);
+    }
+    $taskname = $data['task_name'];
+    $description = $data['description'];
+    $projectID = $req->getAttribute('project_id');
+    $taskID = $req->getAttribute('task_id');  
+
+    $task = new Task($taskID, $taskname,$description, $projectID, null, null, null);
+    $this->service->updateTask($task);
+    $res = $res->withStatus(200);
+    $res->getBody()->write(json_encode("update successfully"));
+    return $res;
+    }catch(Exception $e){
+      if($e->getCode() == 404){
+        $res = $res->withStatus(404);
+        $res->getBody()->write($e->getMessage());
+      }else{
+        $res = $res->withStatus(500);
+        $res->getBody()->write($e->getMessage());
+      }
+      return $res;
+    }
+  }
   public function updateStatus(Request $req, Response $res)
 {
     try {
@@ -28,7 +61,7 @@ class TaskController{
         $taskID = $req->getAttribute('task_id'); 
         $projectID = $req->getAttribute('project_id'); 
 
-        $task = new Task($taskID, null, $projectID, null, $boardID, null);
+        $task = new Task($taskID, null,null, $projectID, null, $boardID, null);
         $this->service->updateStatus($boardID,$taskID);
         
         $res = $res->withStatus(200);
