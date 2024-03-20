@@ -124,6 +124,9 @@ $app->put("/v1/projects/{project_id}/tasks/{task_id}/assignments", function (Req
 $app->post("/v1/projects/{project_id}/tasks/{task_id}/attachments", function (Request $req, Response $res) use ($attachmentController){
   return $attachmentController->InsertAttachment($req, $res);
 });
+$app->post("/v1/projects/{project_id}/tasks/{task_id}/attachments/{attchment_id}", function (Request $req, Response $res) use ($attachmentController){
+  return $attachmentController->updateAttachment($req, $res);
+});
 
 $app->run();
 

@@ -20,6 +20,8 @@ class AttachmentService{
     $this->store->InsertAttachment($attachment);
 
   }
-
+  public function updateAttachment(String $attachmentId ,String $title):void{
+    $this->store->updateAttachment($attachmentId,$title);
+  }
 
 }

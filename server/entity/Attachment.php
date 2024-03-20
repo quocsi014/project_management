@@ -5,14 +5,14 @@ use JsonSerializable;
 
 class Attachment implements JsonSerializable{
 
-  private ?String $attachment_id;
+  private ?String $attachmentId;
   private ?String $attachment_url;
   private ?String $title;
   private ?String $project_id;
  
 
   public function __construct($attachment_id = null, $attachment_url = null, $title = null, $project_id = null){
-    $this->attachment_id = $attachment_id;
+    $this->attachmentId = $attachment_id;
     $this->attachment_url = $attachment_url;
     $this->title = $title;
     $this->project_id = $project_id;
@@ -21,7 +21,7 @@ class Attachment implements JsonSerializable{
   public function jsonSerialize(): mixed
   {
     return array(
-      'attachment_id' => $this->attachment_id,
+      'attachment_id' => $this->attachmentId,
       'attachment_url' => $this->attachment_url,
       'title' => $this->title,
       'project_id' => $this->project_id
@@ -29,11 +29,11 @@ class Attachment implements JsonSerializable{
   }
 
   public function getAttachmentId(): string {
-      return $this->attachment_id;
+      return $this->attachmentId;
   }
 
-  public function setAttachmentId(string $attachment_id): void {
-      $this->attachment_id = $attachment_id;
+  public function setAttachmentId(string $attachmentId): void {
+      $this->attachmentId = $attachmentId;
   }
 
   public function getAttachmentUrl(): string {
