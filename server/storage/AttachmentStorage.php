@@ -32,8 +32,21 @@ class AttachmentStorage implements IAttachmentStorage{
        throw new Exception($e->getMessage(), 500);
 
     }
+  }
+  public function updateAttachment(String $attachmentId ,String $title): void{
+    try{
+        $query = 'UPDATE attachments SET title = ? WHERE attachment_id = ?;';
+        $stmt = $this->db->getConn()->prepare($query);
+        $stmt->execute([$attachmentId,$title]);
+        $result = $stmt->rowCount();
+        if ($result ==0)
+        {
+          throw new Exception ("No attachment Found",404);
+        }
 
-
+    }catch(PDOException $e){
+        throw new Exception($e->getMessage(), 500);
+    }
   }
 
 }
