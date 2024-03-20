@@ -9,7 +9,7 @@ use Slim\Factory\AppFactory;
 use Tuupola\Middleware\CorsMiddleware;
 
 require_once __DIR__ . '/vendor/autoload.php';
-// require __DIR__ . '/controllers/TaskController.php';
+
 
 use Storage\{
   BoardStorage,
@@ -17,7 +17,8 @@ use Storage\{
   ProjectStorage,
   MailSenderStorage,
   UserStorage,
-  TaskStorage
+  TaskStorage,
+  AttachmentStorage
 };
 
 use Service\{
@@ -25,7 +26,8 @@ use Service\{
   ProjectService,
   MailSenderService,
   TaskService,
-  UserService
+  UserService,
+  AttachmentService
 };
 
 use Controller\{
@@ -33,7 +35,8 @@ use Controller\{
   ProjectController,
   MailSenderController,
   TaskController,
-  UserController
+  UserController,
+  AttachmentController
 };
 
 $app = AppFactory::create();
@@ -59,6 +62,10 @@ $taskController = new TaskController($taskService);
 $userStore = new UserStorage($db);
 $userService = new UserService($userStore);
 $userController = new UserController($userService);
+
+$attachmentStore = new AttachmentStorage($db);
+$attachmentService = new AttachmentService($attachmentStore);
+$attachmentController = new AttachmentController($attachmentService);
 
 
 $app->add(new CorsMiddleware([
@@ -112,6 +119,9 @@ $app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request 
 });
 $app->put("/v1/projects/{project_id}/tasks/{task_id}/assignments", function (Request $req, Response $res) use ($taskController){
   return $taskController->updateAssignedUSer($req, $res);
+});
+$app->post("/v1/projects/{project_id}/tasks/{task_id}/attachments", function (Request $req, Response $res) use ($attachmentController){
+  return $attachmentController->InsertAttachment($req, $res);
 });
 
 $app->run();
