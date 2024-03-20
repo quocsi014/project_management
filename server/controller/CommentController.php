@@ -53,7 +53,10 @@ class CommentController{
     }catch (Exception $e){
       if ($e->getCode() == 400) {
         $res = $res->withStatus(400);
-      } else {
+      } 
+      else if ($e->getCode() == 404) {
+        $res = $res->withStatus(404);
+      }else {
           $res = $res->withStatus(500);
       }
       $res->getBody()->write($e->getMessage());

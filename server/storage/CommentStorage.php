@@ -40,13 +40,13 @@ class CommentStorage implements ICommentStorage
 
       if ($stmt->rowCount() == 0) 
       {
-        throw new Exception("CommentID does not exist", 400);
+        throw new Exception("CommentID not found", 404);
       }
     } catch (Exception $e) 
     {
-      if ($e->getCode() == 400)
+      if ($e->getCode() == 404)
       {
-        throw new Exception($e->getMessage(), 400);
+        throw new Exception($e->getMessage(), 404);
       } 
       else throw new Exception($e->getMessage(), 500);
     }
@@ -82,7 +82,7 @@ class CommentStorage implements ICommentStorage
       $stmt->execute([$taskID]);
       if ($stmt->rowCount() == 0) 
       {
-        throw new Exception("No comments found for the task", 404);
+        throw new Exception("Comment of Task was not found", 404);
       }
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $comments = array();
