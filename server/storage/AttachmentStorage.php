@@ -24,8 +24,8 @@ class AttachmentStorage implements IAttachmentStorage{
        $stmt = $this->db->getConn()->prepare($query);
        $stmt->bindValue(1, $attachment->getAttachmentId(), PDO::PARAM_STR);
        $stmt->bindValue(2, $attachment->getAttachmentUrl(), PDO::PARAM_STR);
-       $stmt->bindValue(1, $attachment->getTitle(), PDO::PARAM_STR);
-       $stmt->bindValue(1, $attachment->getProjectId(), PDO::PARAM_STR);
+       $stmt->bindValue(3, $attachment->getTitle(), PDO::PARAM_STR);
+       $stmt->bindValue(4, $attachment->getProjectId(), PDO::PARAM_STR);
        $stmt->execute();
 
     }catch(Exception $e){
