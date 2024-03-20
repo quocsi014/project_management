@@ -5,7 +5,7 @@ namespace Controller;
 use Entity\Attachment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use service\AttachmentService;
+use Service\AttachmentService;
 use Exception;
 use Ramsey\Uuid\Nonstandard\Uuid;
 
@@ -26,7 +26,9 @@ class AttachmentController{
         $data->attachment_url = null;
       }
       if(!isset($data->project_id)) {
-        $data->project_id = null;
+        $res = $res->withStatus(400);
+        $res->getBody()->write("Project id is required");
+        return $res;
       }
       if (!isset($data->attachment_id)) {
         $res = $res->withStatus(400);

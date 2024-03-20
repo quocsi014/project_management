@@ -36,7 +36,7 @@ class Attachment implements JsonSerializable{
       $this->attachment_id = $attachment_id;
   }
 
-  public function getAttachmentUrl(): string {
+  public function getAttachmentUrl(): ?string {
       return $this->attachment_url;
   }
 
@@ -44,7 +44,7 @@ class Attachment implements JsonSerializable{
       $this->attachment_url = $attachment_url;
   }
 
-  public function getTitle(): string {
+  public function getTitle(): ?string {
       return $this->title;
   }
 
