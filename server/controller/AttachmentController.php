@@ -31,7 +31,7 @@ class AttachmentController{
         return $res;
       }
       if (!isset($data->attachment_id)) {
-        $res = $res->withStatus(400);
+        $res = $res->withStatus(404);
         $res->getBody()->write("Attachment id is required");
         return $res;
       }
@@ -47,8 +47,8 @@ class AttachmentController{
       ));
       return $res;
     } catch(Exception $e){
-      if($e->getCode() == 400){
-        $res = $res->withStatus(400);
+      if($e->getCode() == 404){
+        $res = $res->withStatus(404);
         $res->getBody()->write($e->getMessage());
       }else{
         $res = $res->withStatus(500);
