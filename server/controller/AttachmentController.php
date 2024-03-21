@@ -66,14 +66,11 @@ class AttachmentController{
     } else {
       $title = null;
     }
-    //$title = $requestBody['title'];
+    // $title = $requestBody['title'];
    
-    $project_id= $req->getAttribute('project_id'); 
-    $taskID = $req->getAttribute('task_id');
-    $attachmentId = $req->getAttribute('attachment_id');
+    $attachmentId = $req->getAttribute('attchment_id');
    
 
-    $attachment = new Attachment($attachmentId,null, $title, $project_id);
     $this->service->updateAttachment($attachmentId,$title);
     $res = $res->withStatus(200);
     $res->getBody()->write(json_encode(array("update successfully",
@@ -90,6 +87,28 @@ class AttachmentController{
       $res = $res->withStatus(500);
       $res->getBody()->write($e->getMessage());
     }
+    return $res;
+  }
+}
+public function deleteAttachment(Request $req, Response $res){
+  $attachmentId = $req->getAttribute('attchment_id');
+
+  try {
+    $this->service->deleteAttachment($attachmentId);
+    $res = $res->withStatus(200);
+    $res->getBody()->write(json_encode(
+      array(
+        "message" => "Delete successfully"
+      )
+    ));
+    return $res;
+  } catch (Exception $e) {
+    if ($e->getCode() == 404) {
+      $res = $res->withStatus(404);
+    } else {
+      $res = $res->withStatus(500);
+    }
+    $res->getBody()->write($e->getMessage());
     return $res;
   }
 }

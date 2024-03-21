@@ -35,9 +35,9 @@ class AttachmentStorage implements IAttachmentStorage{
   }
   public function updateAttachment(String $attachmentId ,String $title): void{
     try{
-        $query = 'UPDATE attachments SET title = ? WHERE attachment_id = ?;';
+        $query = 'UPDATE attachments SET title = ? WHERE attachment_id = ?';
         $stmt = $this->db->getConn()->prepare($query);
-        $stmt->execute([$attachmentId,$title]);
+        $stmt->execute([ $title, $attachmentId]);
         $result = $stmt->rowCount();
         if ($result ==0)
         {
@@ -48,5 +48,19 @@ class AttachmentStorage implements IAttachmentStorage{
         throw new Exception($e->getMessage(), 500);
     }
   }
+public function deleteAttachment(String $attachmentId){
+  try{
+    $query = 'DELETE FROM attachments WHERE attachment_id = ?;';
 
+    $stmt = $this->db->getConn()->prepare($query);
+    $stmt->bindValue(1, $attachmentId, PDO::PARAM_INT);
+    $stmt->execute();
+    $result = $stmt->rowCount();
+    if($result == 0){
+      throw new Exception("not found", 404);
+    }
+  }catch(PDOException $e){
+    throw new Exception($e->getMessage(), 500);
+  }
+}
 }
