@@ -23,5 +23,7 @@ class AttachmentService{
   public function updateAttachment(String $attachmentId ,String $title):void{
     $this->store->updateAttachment($attachmentId,$title);
   }
-
+  public function deleteAttachment(String $attachmentId){
+    $this->store->deleteAttachment($attachmentId);
+  }
 }
