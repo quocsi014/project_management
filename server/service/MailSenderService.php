@@ -22,6 +22,12 @@ class MailSenderService{
     }
 
     $this->store->insertOTP($otp, $email);
+  }
 
+  public function VerifyOTP(String $email, int $otpVerify){
+    $otp = $this->store->getOtp($email);
+    if($otp != $otpVerify){
+      throw new Exception($otp." ".$otpVerify , 401);
+    }
   }
 }
