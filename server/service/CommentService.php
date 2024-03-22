@@ -19,5 +19,8 @@ class CommentService{
   public function deleteComment(String $id){
     $this->commentStore->deleteComment($id);
   }
+  public function getCommentOfTask(String $id){
+    return $this->commentStore->getCommentOfTask($id);
+  }
 }
 ?>

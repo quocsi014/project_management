@@ -153,6 +153,10 @@ $app->delete("/v1/projects/{project_id}/tasks/{task_id}/comments/{comment_id}", 
   return $commentController->deleteComment($req, $res);
 });
 
+$app->get("/v1/projects/{project_id}/tasks/{task_id}/comments", function (Request $req, Response $res) use ($commentController){
+  return $commentController->getCommentOfComment($req, $res);
+});
+
 /* 
 * * OTP
 */
