@@ -72,7 +72,7 @@ class ProjectStorage implements IProjectStorage{
       $query = 'DELETE FROM projects WHERE project_id = ?;';
 
       $stmt = $this->db->getConn()->prepare($query);
-      $stmt->bindValue(1, $project->getProjectID(), PDO::PARAM_INT);
+      $stmt->bindValue(1, $project->getProjectID(), PDO::PARAM_STR);
       $stmt->execute();
       $result = $stmt->rowCount();
       if($result == 0){
