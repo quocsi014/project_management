@@ -44,7 +44,21 @@ class TaskStorage implements ITaskStorage{
   }
 
   public function updateTask(Task $task):void{
-
+    try{
+      $query = 'UPDATE tasks SET task_name = ?, description = ? WHERE task_id = ?;';
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->bindValue(1, $task->getName(), PDO::PARAM_STR);
+      $stmt->bindValue(2, $task->getDescription(), PDO::PARAM_STR);
+      $stmt->bindValue(3, $task->getTaskID(), PDO::PARAM_INT);
+      $stmt->execute();
+      $result = $stmt->rowCount();
+      if ($result ==0)
+      {
+        throw new Exception ("No Task Found",404);
+      }
+    }catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
 
   public function updateStatus(String $boardID,String $taskID):void{
