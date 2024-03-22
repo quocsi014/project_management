@@ -148,13 +148,19 @@ $app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request 
 $app->put("/v1/projects/{project_id}/tasks/{task_id}/assignments", function (Request $req, Response $res) use ($taskController){
   return $taskController->updateAssignedUSer($req, $res);
 });
-$app->post("/v1/projects/{project_id}/tasks/{task_id}/attachments", function (Request $req, Response $res) use ($attachmentController){
-  return $attachmentController->InsertAttachment($req, $res);
+
+$app->put("/v1/projects/{project_id}/tasks/{task_id}", function (Request $req, Response $res) use ($taskController){
+  return $taskController->updateTask($req, $res);
 });
+
 
 /*
 * * attachments
 */
+$app->post("/v1/projects/{project_id}/tasks/{task_id}/attachments", function (Request $req, Response $res) use ($attachmentController){
+  return $attachmentController->InsertAttachment($req, $res);
+});
+
 $app->put("/v1/projects/{project_id}/tasks/{task_id}/attachments/{attchment_id}", function (Request $req, Response $res) use ($attachmentController){
   return $attachmentController->updateAttachment($req, $res);
 });
