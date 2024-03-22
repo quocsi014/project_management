@@ -4,6 +4,7 @@ use Entity\Board;
 use PDO;
 use PDOException;
 use Exception;
+use DateTime;
 
 use Storage\ITaskStorage;
 use Entity\Task;
@@ -22,7 +23,24 @@ class TaskStorage implements ITaskStorage{
   }
 
   public function inserTask(Task $task):void{
+    try{
+      $this->db->getConn()->beginTransaction();
 
+      //Tạo một công viêc;
+      $query = "INSERT INTO tasks (task_id,task_name,project_id,assigned_user_id,board_id,create_at) VALUES (?, ?, ?, ?, ?, ?)";
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->execute($task->toArray());
+
+      $this->db->getConn()->commit();
+    }catch (PDOException $e){
+      $this->db->getConn()->rollBack();
+      
+      if($e->errorInfo[1] == 1062){
+        throw new Exception($e->getMessage(), 409);
+      }else{
+        throw new Exception($e->getMessage(), 500);
+      }
+    }
   }
 
   public function updateTask(Task $task):void{
