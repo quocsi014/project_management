@@ -43,7 +43,7 @@ class UserAccount implements JsonSerializable {
   // JsonSerializable implementation
   public function jsonSerialize() {
       return array(
-        'userID' => $this->userID,
+        'user_id' => $this->userID,
           'email' => $this->email,
           'password' => $this->password
       );
