@@ -18,7 +18,8 @@ use Storage\{
   ProjectStorage,
   MailSenderStorage,
   UserStorage,
-  TaskStorage
+  TaskStorage,
+  CommentStorage
 };
 
 use Service\{
@@ -27,7 +28,8 @@ use Service\{
   ProjectService,
   MailSenderService,
   TaskService,
-  UserService
+  UserService,
+  CommentService
 };
 
 use Controller\{
@@ -36,7 +38,8 @@ use Controller\{
   ProjectController,
   MailSenderController,
   TaskController,
-  UserController
+  UserController,
+  CommentController
 };
 use Middleware\EmailVerify;
 use Middleware\TokenVerify;
@@ -64,6 +67,7 @@ $taskController = new TaskController($taskService);
 $userStore = new UserStorage($db);
 $userService = new UserService($userStore);
 $userController = new UserController($userService);
+
 
 $accountStore = new AccountStorage($db);
 $accountService = new AccountService($accountStore);
@@ -138,6 +142,9 @@ $app->put("/v1/projects/{project_id}/tasks/{task_id}/assignments", function (Req
   return $taskController->updateAssignedUSer($req, $res);
 });
 
+$app->put("/v1/projects/{project_id}/tasks/{task_id}/comments/{comment_id}", function (Request $req, Response $res) use ($commentController){
+  return $commentController->updateComment($req, $res);
+});
 
 /* 
 * * OTP
