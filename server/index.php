@@ -6,7 +6,6 @@ namespace App;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
-
 use Tuupola\Middleware\CorsMiddleware;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -134,6 +133,11 @@ $app->put("/v1/projects/{project_id}/boards/{board_id}", function (Request $req,
 $app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request $req, Response $res) use ($taskController) {
   return $taskController->updateStatus($req, $res);
 });
+
+$app->put("/v1/projects/{project_id}/tasks/{task_id}/assignments", function (Request $req, Response $res) use ($taskController){
+  return $taskController->updateAssignedUSer($req, $res);
+});
+
 
 /* 
 * * OTP
