@@ -72,8 +72,8 @@ class TaskController{
       ));
         return $res;
   }catch(Exception $e){
-      if($e->getCode() == 404){
-        $res = $res->withStatus(404);
+      if($e->getCode() == 400){
+        $res = $res->withStatus(400);
         $res->getBody()->write($e->getMessage());
       }else{
         $res = $res->withStatus(500);
