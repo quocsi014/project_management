@@ -31,6 +31,9 @@ class Task implements JsonSerializable
     $this->boardID = $boardID;
     $this->createdAt = $createdAt;
   }
+  public function toArray():array{
+    return [$this->taskID, $this->name, $this->projectID, $this->assignedUserID,$this->boardID, $this->createdAt->format('Y-m-d H:i:s')];
+  }
 
   // Getters
   public function getTaskID(): ?string

@@ -140,6 +140,10 @@ $app->put("/v1/projects/{project_id}/boards/{board_id}", function (Request $req,
 /*
 * * Task
 */
+$app->post("/v1/projects/{project_id}/tasks", function (Request $req, Response $res) use ($taskController){
+  return $taskController->AddATask($req, $res);
+});
+
 
 $app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request $req, Response $res) use ($taskController) {
   return $taskController->updateStatus($req, $res);
