@@ -1,15 +1,14 @@
 <?php
 
-
 namespace App;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Tuupola\Middleware\CorsMiddleware;
 
 require_once __DIR__ . '/vendor/autoload.php';
-// require __DIR__ . '/controllers/TaskController.php';
+
+
 
 use Storage\{
   AccountStorage,
@@ -19,6 +18,7 @@ use Storage\{
   MailSenderStorage,
   UserStorage,
   TaskStorage,
+  AttachmentStorage,
   CommentStorage
 };
 
@@ -29,6 +29,7 @@ use Service\{
   MailSenderService,
   TaskService,
   UserService,
+  AttachmentService,
   CommentService
 };
 
@@ -39,10 +40,12 @@ use Controller\{
   MailSenderController,
   TaskController,
   UserController,
+  AttachmentController,
   CommentController
 };
 use Middleware\EmailVerify;
 use Middleware\TokenVerify;
+
 
 $app = AppFactory::create();
 
@@ -67,6 +70,10 @@ $taskController = new TaskController($taskService);
 $userStore = new UserStorage($db);
 $userService = new UserService($userStore);
 $userController = new UserController($userService);
+
+$attachmentStore = new AttachmentStorage($db);
+$attachmentService = new AttachmentService($attachmentStore);
+$attachmentController = new AttachmentController($attachmentService);
 
 
 $accountStore = new AccountStorage($db);
@@ -141,7 +148,19 @@ $app->put("/v1/projects/{project_id}/tasks/{task_id}/status", function (Request 
 $app->put("/v1/projects/{project_id}/tasks/{task_id}/assignments", function (Request $req, Response $res) use ($taskController){
   return $taskController->updateAssignedUSer($req, $res);
 });
+$app->post("/v1/projects/{project_id}/tasks/{task_id}/attachments", function (Request $req, Response $res) use ($attachmentController){
+  return $attachmentController->InsertAttachment($req, $res);
+});
 
+/*
+* * attachments
+*/
+$app->put("/v1/projects/{project_id}/tasks/{task_id}/attachments/{attchment_id}", function (Request $req, Response $res) use ($attachmentController){
+  return $attachmentController->updateAttachment($req, $res);
+});
+$app->delete("/v1/projects/{project_id}/tasks/{task_id}/attachments/{attchment_id}", function (Request $req, Response $res) use ($attachmentController){
+  return $attachmentController->deleteAttachment($req, $res);
+});
 /*
 * *comment
 */
