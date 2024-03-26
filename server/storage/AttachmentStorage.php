@@ -32,8 +32,23 @@ class AttachmentStorage implements IAttachmentStorage{
        throw new Exception($e->getMessage(), 500);
 
     }
-
-
+  }
+  public function GetAttachmentATask(String $attachment_id){
+    try {
+        $query = 'select* from attachments where attachment_id = ?';
+        $stmt = $this->db->getConn()->prepare($query);
+        $stmt->execute([$attachment_id]);
+  
+        $attachmentData = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$attachmentData) {
+          
+          throw new Exception("Attachment not found", 404);
+      }
+      $attachment = new Attachment($attachmentData['attachment_id'],$attachmentData['attachment_url'],$attachmentData['title'],$attachmentData['project_id']);
+      return $attachment;
+    } catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
 
 }

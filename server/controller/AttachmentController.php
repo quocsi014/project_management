@@ -57,5 +57,26 @@ class AttachmentController{
       return $res;
     }
   }
+  public function GetAttachmentAtask(Request $req, Response $res){
+    try {
+      $result = $this->service->GetAttachmentAtask($req->getAttribute('attachment_id'));
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode($result));
+      return $res;
+    } catch(Exception $e){
+      if($e->getCode() == 400){
+        $res = $res->withStatus(400);
+        $res->getBody()->write($e->getMessage());
+      } elseif($e->getCode() == 404) {
+        $res = $res->withStatus(404);
+        $res->getBody()->write($e->getMessage());
+      }
+      else{
+        $res = $res->withStatus(500);
+        $res->getBody()->write($e->getMessage());
+      }
+      return $res;
+    }
+  }
 }
 ?>
