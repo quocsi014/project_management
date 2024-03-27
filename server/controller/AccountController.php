@@ -113,4 +113,41 @@ class AccountController
     return $res;
 
   }
+  public function Changeinfoaccount(Request $req, Response $res)
+  {
+    $body = $req->getBody()->getContents();
+    $data = json_decode($body);
+    $dataError = false;
+    if(!isset($data->first_name)){
+      $res->getBody()->write("First name is required\n");
+      $dataError = true;
+    }
+
+    if(!isset($data->last_name)){
+      $res->getBody()->write("Last name is required\n");
+      $dataError = true;
+    }
+    if(!isset($data->avatar_url)){
+      $res->getBody()->write("URL avatar is required\n");
+      $dataError = true;
+    }
+    if($dataError){
+      $res = $res->withStatus(400);
+      return $res;
+    }
+    $id = Uuid::uuid4();
+    $user_information = new UserInformation($id, $data->first_name, $data->last_name,null,$data->avatar_url, null);
+    try{
+      $this->service->Changeinfoaccount($user_information);
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(array(
+        "message"=>"Change Information account successfully",
+        "account_information"=> $user_information
+      )));
+    }catch(Exception $e){
+      $res = $res->withStatus($e->getCode());
+      $res->getBody()->write($e->getMessage());
+    }
+    return $res;
+  }
 }

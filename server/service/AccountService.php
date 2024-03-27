@@ -40,7 +40,19 @@ class AccountService{
     $this->store->insertAnAccount($user_information);
 
   }
-
+  public function Changeinfoaccount(UserInformation $user_information)
+  {
+    if($user_information->getLastName() == ""){
+      throw new Exception("Last name cannot be blank", 400);
+    }
+    if($user_information->getFirstName() == ""){
+      throw new Exception("First name cannot be blank", 400);
+    }
+    if($user_information->getAvatarURL() == ""){
+      throw new Exception("URL avatar cannot be blank", 400);
+    }
+    $this->store->updateInformation($user_information);
+  }
   public function VerifyOpt(String $otp, String $email){
     
   }

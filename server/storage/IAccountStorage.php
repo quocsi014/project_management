@@ -8,4 +8,5 @@ interface IAccountStorage{
   public function insertAnAccount(UserInformation $user_information):void;
   public function getAnAccount(String $email):UserAccount;
   public function updatePassword(UserAccount $user_account):void;
+  public function updateInformation(UserInformation $user_information):void;
 }

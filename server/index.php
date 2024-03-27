@@ -202,14 +202,21 @@ $app->post("/v1/verify/otp", function (Request $req, Response $res) use ($mailCo
 * * Auth
 */
 
-$app->post(
-  "/v1/login",
-  function (Request $req, Response $res) use ($accountController) {
-    return $accountController->Login($req, $res);
-  }
-);
+  $app->post(
+    "/v1/login",
+    function (Request $req, Response $res) use ($accountController) {
+      return $accountController->Login($req, $res);
+    }
+  );
+
+  $app->put("/v1/users/{user_id}/information", function (Request $req, Response $res) use ($accountController) {
+      return $accountController->Changeinfoaccount($req, $res);
+    }
+  );
 
 $app->post("/v1/register", function(Request $req, Response $res) use($accountController){
   return $accountController->Register($req, $res);
 })->add(new EmailVerify())->add(new TokenVerify());
+
+
 $app->run();

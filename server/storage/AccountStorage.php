@@ -60,4 +60,23 @@ class AccountStorage implements IAccountStorage{
   public function updatePassword(UserAccount $user_account):void{
 
   }
+  public function updateInformation(UserInformation $user_information):void{
+    try{
+      $query = 'UPDATE user_informations SET avatar_url = ?,last_name = ? , first_name = ? WHERE user_id = ?';
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->bindValue(1, $user_information->getAvatarURL(), PDO::PARAM_STR);
+      $stmt->bindValue(2, $user_information->getLastName(), PDO::PARAM_STR);
+      $stmt->bindValue(3, $user_information->getFirstName(), PDO::PARAM_INT);
+      $stmt->bindValue(4, $user_information->getUserID(), PDO::PARAM_INT);
+      $stmt->execute();
+      $result = $stmt->rowCount();
+      if ($result ==0)
+      {
+        throw new Exception ("No Account Found",404);
+      }
+      
+  }catch(PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+  }
+  }
 }
