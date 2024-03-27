@@ -20,11 +20,11 @@ class AttachmentService{
     $this->store->InsertAttachment($attachment);
 
   }
-  public function GetAttachmentATask(String $attachment_id){
-    if($attachment->getAttachmentId() == ""){
+  public function GetAttachmentATask(String $task_id){
+    if($task_id == ""){
       throw new Exception("Attachment id cannot be blank", 400);
     }
-    return $this->store->GetAttachmentATask($attachment_id);
+    return $this->store->GetAttachmentATask($task_id);
   }
 
 

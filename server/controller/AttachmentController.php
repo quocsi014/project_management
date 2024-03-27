@@ -35,8 +35,13 @@ class AttachmentController{
         $res->getBody()->write("Attachment id is required");
         return $res;
       }
+      if (!isset($data->task_id)) {
+        $res = $res->withStatus(404);
+        $res->getBody()->write("Attachment id is required");
+        return $res;
+      }
       
-      $attachment = new Attachment($data->attachment_id, $data->attachment_url, $data->title, $data->project_id);
+      $attachment = new Attachment($data->attachment_id, $data->attachment_url, $data->title, $data->project_id, $data->task_id);
       try{
         $this->service->InsertAttachment($attachment);
         $res = $res->withStatus(200);
@@ -59,7 +64,7 @@ class AttachmentController{
   }
   public function GetAttachmentAtask(Request $req, Response $res){
     try {
-      $result = $this->service->GetAttachmentAtask($req->getAttribute('attachment_id'));
+      $result = $this->service->GetAttachmentAtask($req->getAttribute('task_id'));
       $res = $res->withStatus(200);
       $res->getBody()->write(json_encode($result));
       return $res;

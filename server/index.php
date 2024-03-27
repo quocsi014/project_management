@@ -69,14 +69,14 @@ $attachmentService = new AttachmentService($attachmentStore);
 $attachmentController = new AttachmentController($attachmentService);
 
 
-$app->add(new CorsMiddleware([
-  "origin" => ["*"],
-  "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  "headers.allow" => ["Authorization", "Content-Type", "X-Requested-With"],
-  "headers.expose" => [],
-  "credentials" => true,
-  "cache" => 0,
-]));
+// $app->add(new CorsMiddleware([
+//   "origin" => ["*"],
+//   "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//   "headers.allow" => ["Authorization", "Content-Type", "X-Requested-With"],
+//   "headers.expose" => [],
+//   "credentials" => true,
+//   "cache" => 0,
+// ]));
 
 $app->post("/v1/projects", function (Request $req, Response $res) use ($projectController) {
   return $projectController->CreateProject($req, $res);
