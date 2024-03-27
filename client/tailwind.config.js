@@ -2,11 +2,35 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    borderWidth: {
+      '0': '0',
+      '2': '2px',
+      '3': '3px',
+      '4': '4px',
+      '6': '6px',
+      '8': '8px',
+      '12': '12px'
+    },
     extend: {
+      keyframes: {
+        loading_animation: {
+          '0%, 20%, 100%': { transform: 'translateY(0) rotate(45deg)', opacity:'0.5' },
+          '1%, 19%':{opacity:'1'},
+          '10%': { transform: 'translateY(-30px) rotate(45deg)', opacity:'1',boxShadow:'0px 0px 5px blue' },
+        }
+      },
+      animation: {
+        loading_animation_1: 'loading_animation 1.2s linear infinite',
+        loading_animation_2: 'loading_animation 1.2s linear infinite 0.2s',
+        loading_animation_3: 'loading_animation 1.2s linear infinite 0.4s',
+        loading_animation_4: 'loading_animation 1.2s linear infinite 0.6s',
+        loading_animation_5: 'loading_animation 1.2s linear infinite 0.8s',
+      },
       fontFamily: {
         roboto: ["roboto"],
       },
       spacing: {
+        "1px": "1px",
         100: "25.0rem",
         101: "25.25rem",
         102: "25.5rem",
