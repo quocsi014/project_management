@@ -209,6 +209,11 @@ $app->post(
   }
 );
 
+$app->put("/v1/user/{user_id}",function (Request $req, Response $res) use ($accountController) {
+    return $accountController->ChangePass($req, $res);
+  }
+);
+
 $app->post("/v1/register", function(Request $req, Response $res) use($accountController){
   return $accountController->Register($req, $res);
 })->add(new EmailVerify())->add(new TokenVerify());

@@ -113,4 +113,39 @@ class AccountController
     return $res;
 
   }
+  function ChangePass(Request $req, Response $res)
+  {
+    $body = $req->getBody()->getContents();
+    $data = json_decode($body);
+    if (!isset($data->old_password)) {
+      $res = $res->withStatus(400);
+      $res->getBody()->write("old password is required");
+      return $res;
+    }
+    if (!isset($data->new_password)) {
+      $res = $res->withStatus(400);
+      $res->getBody()->write("new password is required");
+      return $res;
+    }
+    $id = Uuid::uuid4();
+    try{
+      $this->service->changePassword($id, $data->old_password, $data->new_password);
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(array(
+        "message"=>"Change Password successfully"
+      )));
+
+    }
+    catch(Exception $e){
+      if ($e->getCode() == 401) {
+        $res = $res->withStatus(401);
+        $res->getBody()->write($e->getMessage());
+      }
+      if ($e->getCode() == 500) {
+        $res = $res->withStatus(500);
+        $res->getBody()->write($e->getMessage());
+    }
+    return $res;
+    }
+  }
 }

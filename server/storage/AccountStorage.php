@@ -57,7 +57,29 @@ class AccountStorage implements IAccountStorage{
       throw new Exception($e->getMessage(), 500);
     }
   } 
-  public function updatePassword(UserAccount $user_account):void{
+  public function getAnAccountbyID(String $ID):UserAccount{
+    try{
+      $query = "select * from user_accounts where user_id = ?";
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->execute([$ID]);
 
+      $result = $stmt->fetch(PDO::FETCH_ASSOC);
+      if(isset($result)){
+        return new UserAccount($result['user_id'], $result['email'], $result['password']);
+      }else{
+        throw new Exception("No User Found", 404);
+      }
+    }catch (PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
+  } 
+  public function updatePassword(String $userid, String $newpassword): void{
+    try{
+      $query = 'UPDATE user_accounts SET password = ? WHERE user_id = ?';
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->execute([ $newpassword, $userid]);
+    }catch (PDOException $e){
+      throw new Exception($e->getMessage(), 500);
+    }
   }
 }

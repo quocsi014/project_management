@@ -22,6 +22,15 @@ class AccountService{
     }
 
   }
+  public function changePassword(String $ID, String $oldPassword, String $newPassword) {
+    $account = $this->store->getAnAccountbyID($ID);
+    if (password_verify($oldPassword, $account->getPassword())) {
+        $newHashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+        $this->store->updatePassword($account->getUserID(), $newHashedPassword);
+    } else {
+        throw new Exception("Mật khẩu cũ không chính xác", 401);
+    }
+  }
 
   public function Register(UserInformation $user_information){
     if($user_information->getLastName() == ""){
