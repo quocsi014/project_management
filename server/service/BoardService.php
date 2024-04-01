@@ -25,18 +25,12 @@ class BoardService{
     $this->store->deleteBoard($projectID);
   }
 
-  public function addBoards(Board $board): void{
+  public function addBoards(Board $board, String $nextBoardID): void{
    
-    if($board->getBoardId() == ""){
-      throw new Exception("Board id cannot be blank", 400);
-    }
     if($board->getName() == ""){
       throw new Exception("Board name cannot be blank", 400);
     }
-    if($board->getProjectId() == ""){
-    throw new Exception("Project id cannot be blank", 400);
-    }
 
-    $this->store->insertBoard($board);
+    $this->store->insertBoard($board, $nextBoardID);
   }
 }

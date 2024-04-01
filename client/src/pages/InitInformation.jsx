@@ -23,13 +23,14 @@ export default function () {
   const queryParams = new URLSearchParams(location.search)
 
   useEffect(()=>{
-    let email = queryParams.get('email')
+    let email = queryParams.get('user')
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email))
     {
       navigate("/register")
     }
-  }, location)
+  }, [])
+
   let register = ()=>{
 
     let err = false
@@ -49,7 +50,7 @@ export default function () {
       return
     }
 
-    registerAccount(queryParams.get('email'), firstName, lastName, password)
+    registerAccount(queryParams.get('user'), firstName, lastName, password)
     .then(res=>{
       console.log(res.data)
     })

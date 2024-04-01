@@ -72,12 +72,12 @@ class AccountController
     $data = json_decode($body);
 
     $dataError = false;
-    if(!isset($data->first_name)){
+    if(!isset($data->firstname)){
       $res->getBody()->write("First name is required\n");
       $dataError = true;
     }
 
-    if(!isset($data->last_name)){
+    if(!isset($data->lastname)){
       $res->getBody()->write("Last name is required\n");
       $dataError = true;
     }
@@ -98,7 +98,7 @@ class AccountController
     }
     $id = Uuid::uuid4();
     $user_account = new UserAccount($id, $data->account->email, $data->account->password);
-    $user_information = new UserInformation($id, $data->first_name, $data->last_name, null, null, $user_account);
+    $user_information = new UserInformation($id, $data->firstname, $data->lastname, null, null, $user_account);
     try{
       $this->service->Register($user_information);
       $res = $res->withStatus(200);

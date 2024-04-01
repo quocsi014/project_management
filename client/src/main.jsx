@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { Provider } from 'react-redux'
 import App from './App.jsx'
 import "./index.css"
 import { RouterProvider, BrowserRouter as Router, Routes, Route } from 'react-router-dom'
@@ -8,9 +9,9 @@ import Register from './pages/Register.jsx'
 import VerifyEmail from './pages/VerifyEmail.jsx'
 import InitInformation from './pages/InitInformation.jsx'
 import InternalServerError from './pages/InternalServerError.jsx'
-
+import store from './redux/store.js'
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  <Provider store={store}>
     <Router>
       <Routes>
         <Route path="/*" exact element={<App/>}></Route>
@@ -21,5 +22,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/internalservererror" exact element={<InternalServerError/>}/>
       </Routes>
     </Router>
-  </React.StrictMode>
+  </Provider>
 )

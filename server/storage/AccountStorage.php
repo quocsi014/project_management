@@ -56,7 +56,8 @@ class AccountStorage implements IAccountStorage{
     }catch (PDOException $e){
       throw new Exception($e->getMessage(), 500);
     }
-  } 
+  }
+
   public function updatePassword(UserAccount $user_account):void{
 
   }
