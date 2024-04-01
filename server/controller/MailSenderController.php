@@ -9,6 +9,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use Service\MailSenderService;
 use Firebase\JWT\JWT;
 use Exception;
+use Storage\AccountStorage;
 
 class MailSenderController
 {
@@ -42,18 +43,21 @@ class MailSenderController
 			$mail->Subject = 'Sign up proma';
 			$mail->Body    = 'Your OTP is: ' . $otp;
 
-			$mail->send();
 			$this->service->CreateOTP($otp, $data->email);
-
+			$mail->send();
 
 			$res = $res->withStatus(200);
 			$res->getBody()->write("Sent successfully");
 			return $res;
+
 		} catch (Exception $e) {
 			if ($e->getCode() == 400) {
 				$res = $res->withStatus(400);
 				$res->getBody()->write($e->getMessage());
-			} else {
+			}else if($e->getCode() == 409){
+				$res = $res->withStatus(409);
+				$res->getBody()->write($e->getMessage());
+			}else {
 				$res = $res->withStatus(500);
 				$res->getBody()->write($e->getMessage());
 			}

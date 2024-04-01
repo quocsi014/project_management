@@ -20,7 +20,6 @@ class MailSenderService{
     if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
       throw new Exception("email is not valid", 400);
     }
-
     $this->store->insertOTP($otp, $email);
   }
 

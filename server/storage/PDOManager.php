@@ -1,15 +1,19 @@
 <?php
 namespace Storage;
 
+use Exception;
 use PDO;
 use PDOException;
 
 class PDOManager
 {
-  private PDO $conn;
+  private ?PDO $conn;
 
   public function getConn():PDO{
-    return $this->conn;
+      if($this->conn == null){
+        throw new Exception("Cannot connect to database", 500);
+      }
+      return $this->conn;
   }
 
   public function __construct($conn = null)
@@ -17,15 +21,15 @@ class PDOManager
     if ($conn === null) {
       // Tạo kết nối nếu không được cung cấp
       try {
-         $servername = "127.0.0.1";
+         $servername = "172.17.0.1";
         $username = "root";
-        $password = "";
+        $password = "qwerty..";
         $this->conn = new PDO("mysql:host=$servername;port=3306;dbname=project_management", $username, $password);
         
         // set the PDO error mode to exception
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       } catch (PDOException $e) {
-        echo "Connection failed: " . $e->getMessage();
+        $this->conn = null;
       }
     } else {
       // Sử dụng kết nối được cung cấp

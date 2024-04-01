@@ -40,11 +40,14 @@ class ProjectService{
     if($project->getName() == ""){
       throw new Exception("Project name cannot be blank", 400);
     }
-    
-    return $this->store->updateAProject($project);
+    $this->store->updateAProject($project);
   }
   public function deleteAProject(Project $project){
     return $this->store->deleteAProject($project);
+  }
+
+  public function GetProjectOfUser($workspace_id, $user_id){
+    return $this->store->getProjectOfUser($workspace_id, $user_id);
   }
   
 }

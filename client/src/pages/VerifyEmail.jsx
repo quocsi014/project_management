@@ -9,7 +9,7 @@ import Loading from "../components/Loading";
 
 export default function () {
   const [otp, setOtp] = useState(["", "", "", ""]);
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(120);
   const [isLoading, setIsLoading] = useState(false);
   const [otpErrorMsg, setOtpErrorMsg] = useState("");
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export default function () {
     if (!emailRegex.test(email)) {
       navigate("/register");
     }
-  }, [location]);
+  }, []);
 
   let inputChange = (e, index) => {
     if (
