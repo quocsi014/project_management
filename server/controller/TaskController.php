@@ -6,6 +6,7 @@ use Entity\Task;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Service\TaskService;
+use Ramsey\Uuid\Uuid;
 use Exception;
 use DateTime;
 
@@ -14,6 +15,88 @@ class TaskController{
   public function __construct(TaskService $service)
   {
     $this->service = $service;
+  }
+  public function AddATask(Request $req, Response $res)
+  {
+    $body = $req->getBody()->getContents();
+      $data = json_decode($body);
+      if (!isset($data->project_id)) {
+        $res = $res->withStatus(400);
+        $res->getBody()->write("Project ID là required");
+        return $res;
+        }
+        if (!isset($data->task_id)) {
+          $data->task_id = Uuid::uuid4();
+        }
+        if (!isset($data->task_name)) {
+          $res = $res->withStatus(400);
+          $res->getBody()->write("Task name is required");
+          return $res;
+        }
+        if (!isset($data->assignedUserID)) {
+          $res = $res->withStatus(400);
+          $res->getBody()->write("assigned User ID is required");
+          return $res;
+        }
+        if (!isset($data->boardID)) {
+          $res = $res->withStatus(400);
+          $res->getBody()->write("board ID is required");
+          return $res;
+        }
+    $task = new Task($data->task_id, $data->task_name, $data->project_id, $data->assignedUserID, $data->boardID,DateTime::createFromFormat('Y-m-d H:i:s', $data->create_at));
+    try {
+      $this->service->AddATask($task);
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(
+        array(
+        "message" => "create successfully",
+        "Task" => $task
+        )
+      ));
+      return $res;
+    }catch(Exception $e){
+      if($e->getCode() == 409){
+        $res = $res->withStatus(409);
+        $res->getBody()->write($e->getMessage());
+      }else{
+        $res = $res->withStatus(500);
+        $res->getBody()->write($e->getMessage());
+      }
+      return $res;
+    }
+  }
+  public function updateTask(Request $req, Response $res)
+  {
+    
+    try{
+      $body = $req->getBody()->getContents();
+    $data = json_decode($body);
+    if (!isset($requestBody['task_id'])) {
+      throw new Exception("Task ID is required", 400);
+    }
+    if (!isset($requestBody['task_name'])) {
+      throw new Exception("Name is required", 400);
+    }
+    $taskname = $data['task_name'];
+    $description = $data['description'];
+    $projectID = $req->getAttribute('project_id');
+    $taskID = $req->getAttribute('task_id');  
+
+    $task = new Task($taskID, $taskname,$description, $projectID, null, null, null);
+    $this->service->updateTask($task);
+    $res = $res->withStatus(200);
+    $res->getBody()->write(json_encode("update successfully"));
+    return $res;
+    }catch(Exception $e){
+      if($e->getCode() == 404){
+        $res = $res->withStatus(404);
+        $res->getBody()->write($e->getMessage());
+      }else{
+        $res = $res->withStatus(500);
+        $res->getBody()->write($e->getMessage());
+      }
+      return $res;
+    }
   }
   public function updateStatus(Request $req, Response $res)
 {
@@ -28,7 +111,7 @@ class TaskController{
         $taskID = $req->getAttribute('task_id'); 
         $projectID = $req->getAttribute('project_id'); 
 
-        $task = new Task($taskID, null, $projectID, null, $boardID, null);
+        $task = new Task($taskID, null,null, $projectID, null, $boardID, null);
         $this->service->updateStatus($boardID,$taskID);
         
         $res = $res->withStatus(200);
@@ -39,8 +122,8 @@ class TaskController{
       ));
         return $res;
   }catch(Exception $e){
-      if($e->getCode() == 404){
-        $res = $res->withStatus(404);
+      if($e->getCode() == 400){
+        $res = $res->withStatus(400);
         $res->getBody()->write($e->getMessage());
       }else{
         $res = $res->withStatus(500);
@@ -81,5 +164,23 @@ class TaskController{
     }
     return $res;
   }
+}
+public function getTasksOfProject(Request $req, Response $res){
+  try {
+    $task = $this->service->getTasksOfProject($req->getAttribute("project_id"));
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(
+        array("message"=>"get successfully", "tasks"=>$task)
+      ));
+  } catch(Exception $e)
+  {
+    if($e->getCode()==404)
+    {
+      $res=$res->withStatus(404);
+    }
+    else $res=$res->withStatus(500);
+    $res->getBody()->write($e->getMessage());
+  }
+  return $res;
 }
 }

@@ -20,6 +20,7 @@ class AttachmentService{
     $this->store->InsertAttachment($attachment);
 
   }
+<<<<<<< HEAD
   public function GetAttachmentATask(String $attachment_id){
     if($attachment->getAttachmentId() == ""){
       throw new Exception("Attachment id cannot be blank", 400);
@@ -28,4 +29,12 @@ class AttachmentService{
   }
 
 
+=======
+  public function updateAttachment(String $attachmentId ,String $title):void{
+    $this->store->updateAttachment($attachmentId,$title);
+  }
+  public function deleteAttachment(String $attachmentId){
+    $this->store->deleteAttachment($attachmentId);
+  }
+>>>>>>> 0d75e7f412b4caefa49e35f2a87cb79d5c90af8d
 }

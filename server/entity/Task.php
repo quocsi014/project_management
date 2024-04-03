@@ -9,6 +9,7 @@ class Task implements JsonSerializable
 {
   private ?string $taskID;
   private ?string $name;
+  private ?String $description;
   private ?string $projectID;
   private ?string $assignedUserID;
   private ?string $boardID;
@@ -16,6 +17,7 @@ class Task implements JsonSerializable
   public function __construct(
     ?string $taskID = null,
     ?string $name = null,
+    ?string $description = null,
     ?string $projectID = null,
     ?string $assignedUserID = null,
     ?string $boardID = null,
@@ -23,10 +25,14 @@ class Task implements JsonSerializable
   ) {
     $this->taskID = $taskID;
     $this->name = $name;
+    $this->description = $description;
     $this->projectID = $projectID;
     $this->assignedUserID = $assignedUserID;
     $this->boardID = $boardID;
     $this->createdAt = $createdAt;
+  }
+  public function toArray():array{
+    return [$this->taskID, $this->name, $this->projectID, $this->assignedUserID,$this->boardID, $this->createdAt->format('Y-m-d H:i:s')];
   }
 
   // Getters
@@ -38,6 +44,10 @@ class Task implements JsonSerializable
   public function getName(): ?string
   {
     return $this->name;
+  }
+  public function getDescription(): ?string
+  {
+    return $this->description;
   }
 
   public function getProjectID(): ?string
@@ -69,6 +79,11 @@ class Task implements JsonSerializable
   public function setName(?string $name): void
   {
     $this->name = $name;
+  }
+
+  public function setDescription(?string $description): void
+  {
+    $this->description = $description;
   }
 
   public function setProjectID(?string $projectID): void

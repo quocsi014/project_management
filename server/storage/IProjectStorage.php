@@ -11,4 +11,5 @@ interface IProjectStorage{
   public function deleteAProject(Project $project);
   public function getAProject(String $projectID):Project;
   public function getAllProject(Int $limit, int $offset):array;
+public function getProjectOfUser(String $workspace_id, String $user_id):array;
 }

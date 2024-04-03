@@ -1,4 +1,5 @@
 <?php
+
 namespace Storage;
 
 use FastRoute\DataGenerator;
@@ -10,23 +11,26 @@ use Exception;
 use DateTime;
 use Entity\Project;
 use Entity\Board;
+use Firebase\JWT\ExpiredException;
 
-class ProjectStorage implements IProjectStorage{
+class ProjectStorage implements IProjectStorage
+{
   private PDOManager $db;
 
-  public function __construct(PDOManager $db = null){
+  public function __construct(PDOManager $db = null)
+  {
 
-    if(isset($db)){
+    if (isset($db)) {
       $this->db = $db;
-    }else{
+    } else {
       $this->db = new PDOManager(null);
     }
-
   }
 
-  public function insertAProject(Project $project){
+  public function insertAProject(Project $project)
+  {
 
-    try{
+    try {
       $this->db->getConn()->beginTransaction();
 
       //Tạo một dự án;
@@ -40,50 +44,50 @@ class ProjectStorage implements IProjectStorage{
       $stmt2->execute([$project->getOwnerID(), $project->getProjectID(), 'LEADER']);
 
       $this->db->getConn()->commit();
-    }catch (PDOException $e){
+    } catch (PDOException $e) {
       $this->db->getConn()->rollBack();
-      
-      if($e->errorInfo[1] == 1062){
+
+      if ($e->errorInfo[1] == 1062) {
         throw new Exception($e->getMessage(), 409);
-      }else{
+      } else {
         throw new Exception($e->getMessage(), 500);
       }
     }
-    
-
-
   }
 
-  public function updateAProject(Project $project) {
-    try{
+  public function updateAProject(Project $project)
+  {
+    try {
       $query = 'UPDATE projects SET project_name = ?, description = ? WHERE project_id = ?;';
       $stmt = $this->db->getConn()->prepare($query);
       $stmt->bindValue(1, $project->getName(), PDO::PARAM_STR);
       $stmt->bindValue(2, $project->getDescription(), PDO::PARAM_STR);
-      $stmt->bindValue(3, $project->getProjectID(), PDO::PARAM_INT);
+      $stmt->bindValue(3, $project->getProjectID(), PDO::PARAM_STR);
       $stmt->execute();
-    }catch(PDOException $e){
+    } catch (PDOException $e) {
       throw new Exception($e->getMessage(), 500);
     }
   }
 
-  public function deleteAProject(Project $project){
-    try{
+  public function deleteAProject(Project $project)
+  {
+    try {
       $query = 'DELETE FROM projects WHERE project_id = ?;';
 
       $stmt = $this->db->getConn()->prepare($query);
-      $stmt->bindValue(1, $project->getProjectID(), PDO::PARAM_INT);
+      $stmt->bindValue(1, $project->getProjectID(), PDO::PARAM_STR);
       $stmt->execute();
       $result = $stmt->rowCount();
-      if($result == 0){
+      if ($result == 0) {
         throw new Exception("not found", 404);
       }
-    }catch(PDOException $e){
+    } catch (PDOException $e) {
       throw new Exception($e->getMessage(), 500);
     }
   }
 
-  public function getAProject(String $projectID):Project{
+  public function getAProject(String $projectID): Project
+  {
     try {
       $query = 'select* from projects where project_id = ?';
       $stmt = $this->db->getConn()->prepare($query);
@@ -91,24 +95,23 @@ class ProjectStorage implements IProjectStorage{
 
       $projectData = $stmt->fetch(PDO::FETCH_ASSOC);
       if (!$projectData) {
-        
-        throw new Exception("Project not found", 404);
-    }
 
-      $project = new Project($projectData['project_id'],$projectData['project_name'],$projectData['description'],$projectData['owner_id'],new DateTime($projectData['create_at']));
+        throw new Exception("Project not found", 404);
+      }
+
+      $project = new Project($projectData['project_id'], $projectData['project_name'], $projectData['description'], $projectData['owner_id'], new DateTime($projectData['create_at']));
 
       return $project;
-
-
-    } catch(PDOException $e){
+    } catch (PDOException $e) {
       throw new Exception($e->getMessage(), 500);
     }
   }
-  
 
-  public function getAllProject(int $limit, int $offset):array{
-    try{
-      
+
+  public function getAllProject(int $limit, int $offset): array
+  {
+    try {
+
       $this->db->getConn()->beginTransaction();
 
       $query = "select* from projects LIMIT :limit OFFSET :offset";
@@ -120,22 +123,41 @@ class ProjectStorage implements IProjectStorage{
       $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
       $result = [];
-      foreach($projects as $projectData){
-        $project = new Project( $projectData['project_id'],
-        $projectData['project_name'],
-        $projectData['description'],
-        "",
-        new DateTime($projectData['create_at']));
+      foreach ($projects as $projectData) {
+        $project = new Project(
+          $projectData['project_id'],
+          $projectData['project_name'],
+          $projectData['description'],
+          "",
+          new DateTime($projectData['create_at'])
+        );
         $result[] = $project; // thêm project vào mảng   
       };
       $this->db->getConn()->commit();
-    }catch (PDOException $e){
+    } catch (PDOException $e) {
       $this->db->getConn()->rollBack();
       throw new Exception($e->getMessage(), 500);
     }
     return $result;
   }
-  
 
+  public function getProjectOfUser(string $workspace_id, string $user_id): array
+  {
+    try {
 
+      $query = "select * from memberships join  projects on memberships.user_id = ? and projects.workspace_id = ? and memberships.project_id = projects.project_id";
+      $stmt = $this->db->getConn()->prepare($query);
+      $stmt->execute([$user_id, $workspace_id]);
+
+      $data = $stmt->fetchAll();
+      $projects = [];
+      foreach($data as $row){
+        $project = new Project($row['project_id'], $row['project_name'], $row['description'], $row['owner_id'], $row['create_at']?DateTime::createFromFormat('Y-m-d H:i:s', $row['create_at']):null);
+        $projects[] = $project;
+      }
+      return $projects;
+    } catch (Exception $e) {
+      throw new ExpiredException($e->getMessage(), 500);
+    }
+  }
 }

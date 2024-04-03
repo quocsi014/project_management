@@ -1,9 +1,11 @@
 <?php
 
 namespace Service;
+
 use Exception;
 
 use Storage\ITaskStorage;
+use Entity\Task;
 
 class TaskService{
   private ITaskStorage $store;
@@ -12,11 +14,34 @@ class TaskService{
   {
     $this->store = $store;
   }
+  public function AddATask(Task $task):void
+  {
+    if($task->getTaskID() == ""){
+      throw new Exception("Task id cannot be blank", 400);
+    }
+    if($task->getName() == ""){
+      throw new Exception("Task name cannot be blank", 400);
+    }
+    if($task->getProjectId() == ""){
+    throw new Exception("Project id cannot be blank", 400);
+    }
+
+    $this->store->inserTask($task);
+  }
   public function updateStatus(String $boardID, String $taskID):void{
     
     $this->store->updateStatus($boardID,$taskID);
   }
   public function updateAssignedUSer(String $assignedUserID, String $taskID):void{
     $this->store->updateAssignedUSer($assignedUserID,$taskID);
+  }
+  public function updateTask(Task $task):void{
+    if($task->getName() == ""){
+      throw new Exception("Task name cannot be blank", 400);
+    }
+    $this->store->updateTask($task);
+  }
+  public function getTasksOfProject(String $projectID){
+    $this->store->getTasksOfProject($projectID);
   }
 }

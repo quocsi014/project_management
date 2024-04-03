@@ -32,6 +32,7 @@ class AttachmentStorage implements IAttachmentStorage{
        throw new Exception($e->getMessage(), 500);
 
     }
+<<<<<<< HEAD
   }
   public function GetAttachmentATask(String $attachment_id){
     try {
@@ -49,6 +50,37 @@ class AttachmentStorage implements IAttachmentStorage{
     } catch(PDOException $e){
       throw new Exception($e->getMessage(), 500);
     }
+=======
+>>>>>>> 0d75e7f412b4caefa49e35f2a87cb79d5c90af8d
   }
+  public function updateAttachment(String $attachmentId ,String $title): void{
+    try{
+        $query = 'UPDATE attachments SET title = ? WHERE attachment_id = ?';
+        $stmt = $this->db->getConn()->prepare($query);
+        $stmt->execute([ $title, $attachmentId]);
+        $result = $stmt->rowCount();
+        if ($result ==0)
+        {
+          throw new Exception ("No attachment Found",404);
+        }
 
+    }catch(PDOException $e){
+        throw new Exception($e->getMessage(), 500);
+    }
+  }
+public function deleteAttachment(String $attachmentId){
+  try{
+    $query = 'DELETE FROM attachments WHERE attachment_id = ?;';
+
+    $stmt = $this->db->getConn()->prepare($query);
+    $stmt->bindValue(1, $attachmentId, PDO::PARAM_INT);
+    $stmt->execute();
+    $result = $stmt->rowCount();
+    if($result == 0){
+      throw new Exception("not found", 404);
+    }
+  }catch(PDOException $e){
+    throw new Exception($e->getMessage(), 500);
+  }
+}
 }

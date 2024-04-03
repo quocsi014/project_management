@@ -31,7 +31,7 @@ class AttachmentController{
         return $res;
       }
       if (!isset($data->attachment_id)) {
-        $res = $res->withStatus(404);
+        $res = $res->withStatus(400);
         $res->getBody()->write("Attachment id is required");
         return $res;
       }
@@ -48,7 +48,7 @@ class AttachmentController{
       return $res;
     } catch(Exception $e){
       if($e->getCode() == 404){
-        $res = $res->withStatus(404);
+        $res = $res->withStatus(400);
         $res->getBody()->write($e->getMessage());
       }else{
         $res = $res->withStatus(500);
@@ -57,6 +57,7 @@ class AttachmentController{
       return $res;
     }
   }
+<<<<<<< HEAD
   public function GetAttachmentAtask(Request $req, Response $res){
     try {
       $result = $this->service->GetAttachmentAtask($req->getAttribute('attachment_id'));
@@ -78,5 +79,62 @@ class AttachmentController{
       return $res;
     }
   }
+=======
+  public function updateAttachment(Request $req, Response $res){
+    try{
+    $requestBody = $req->getBody()->getContents();
+    $requestBody = json_decode($requestBody, true);
+    if (isset($requestBody['title'])) {
+      $title = $requestBody['title'];
+    } else {
+      $title = null;
+    }
+    // $title = $requestBody['title'];
+   
+    $attachmentId = $req->getAttribute('attchment_id');
+   
+
+    $this->service->updateAttachment($attachmentId,$title);
+    $res = $res->withStatus(200);
+    $res->getBody()->write(json_encode(array("update successfully",
+      "attachment_id" => $attachmentId,
+      "title" => $title
+    )
+  ));
+    return $res;
+  }catch(Exception $e){
+    if($e->getCode() == 400){
+      $res = $res->withStatus(400);
+      $res->getBody()->write($e->getMessage());
+    }else{
+      $res = $res->withStatus(500);
+      $res->getBody()->write($e->getMessage());
+    }
+    return $res;
+  }
+}
+public function deleteAttachment(Request $req, Response $res){
+  $attachmentId = $req->getAttribute('attchment_id');
+
+  try {
+    $this->service->deleteAttachment($attachmentId);
+    $res = $res->withStatus(200);
+    $res->getBody()->write(json_encode(
+      array(
+        "message" => "Delete successfully"
+      )
+    ));
+    return $res;
+  } catch (Exception $e) {
+    if ($e->getCode() == 404) {
+      $res = $res->withStatus(404);
+    } else {
+      $res = $res->withStatus(500);
+    }
+    $res->getBody()->write($e->getMessage());
+    return $res;
+  }
+}
+>>>>>>> 0d75e7f412b4caefa49e35f2a87cb79d5c90af8d
 }
 ?>
