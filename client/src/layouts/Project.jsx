@@ -31,13 +31,15 @@ export default function (props) {
   const { project_id, workspace_id } = useParams();
   const [project, setProject] = useState(null);
   useEffect(() => {
-    getAProject(workspace_id, project_id)
-      .then((result) => {
-        setProject(result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+    // getAProject(workspace_id, project_id)
+    //   .then((result) => {
+    //     setProject(result.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    setProject("HIHI");
   }, []);
 
   return project ? (

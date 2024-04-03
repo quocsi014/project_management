@@ -1,0 +1,125 @@
+html,
+canvas,
+body,
+#react-container,
+#routeContainer {
+  font-family: Arial;
+  height: 100%;
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%; 
+  height: 100%;
+}
+
+.time-line-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  margin: 10px;
+}
+
+.toolbar{
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  position: relative;
+} 
+
+.toolbar-left{
+  align-items: center;
+    display: flex;
+    flex: 1 1;
+    margin-right: auto;
+    padding-right: 8px;
+}
+
+.toolbar-right{
+  align-items: center;
+  display: flex;
+  margin-left: auto;
+}
+
+
+.addTask{
+  border: 1px solid gray;
+  margin-left: 20px;
+  font-size: 13px;
+  width: 130px;
+  height: 30px;
+  border-radius: 7px 0 0 7px;
+}
+
+.mainButton{
+  border: 1px solid gray;
+  font-size: 13px;
+  width: 20px;
+  height: 30px;
+  border-radius: 0 7px 7px 0;
+  cursor: pointer; /* Con trỏ chuột khi di chuyển qua button */
+}
+
+.subButtonsContainer {
+  position: relative; /* Cho phép các sub-button sử dụng position absolute trong phạm vi container */
+}
+
+.subButton {
+  background-color: #f0f0f0; /* Màu nền của button phụ */
+  cursor: pointer; /* Con trỏ chuột khi di chuyển qua button */
+  position: absolute; /* Đặt vị trí tuyệt đối */
+  left: 0;
+  z-index: 100;
+  width: 175px;
+  height: 45px;
+  top: 15px;
+  left: -20px;
+  border-radius: 0;
+}
+.subButton:nth-child(2) {
+  border-top: 1px solid gray;
+  top: 60px; /* Điều chỉnh khoảng cách giữa các button phụ nếu cần thiết */
+}
+
+.custom-select {
+  appearance: none; /* Remove default arrow */
+  -webkit-appearance: none; /* Remove default arrow on webkit browsers */
+  -moz-appearance: none; /* Remove default arrow on Firefox */
+  background-repeat: no-repeat;
+  font-size: 13px;
+  height: 30px;
+  padding:0 10px 0 10px;
+  margin-left: 20px;
+  border: 1px solid gray;
+}
+
+.custom-select:hover {
+  border-color: #999; /* Adjust border color on hover for clarity */
+}
+
+.custom-select:focus {
+  border-color: #333; /* Adjust border color on focus for clarity */
+}
+
+#btn-today{
+  height: 30px;
+  border: 1px solid gray;
+  align-items: center;
+  font-size: 13px;
+}
