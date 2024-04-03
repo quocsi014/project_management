@@ -197,4 +197,34 @@ class ProjectController
       return $res;
     }
   }
+
+  public function GetUserOfProject(Request $req, Response $res){
+    try{
+      $project_id = $req->getAttribute('project_id');
+      $queryParams = $req->getQueryParams();
+      $limit = 10;
+      $offset = 0;
+      if(isset($queryParams['limit'])){
+        $limit = (int)$queryParams['limit'];
+      }
+
+      if(isset($queryParams['offset'])){
+        $limit = (int)$queryParams['offset'];
+      }
+
+
+
+      $users = $this->service->getUserOfProject($project_id, $limit, $offset);
+
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(array(
+        "users"=> $users
+      )));
+    }catch(Exception $e){
+      $res = $res->withStatus(200);
+      $res->getBody()->write($e->getMessage());
+    }finally{
+      return $res;
+    }
+  }
 }

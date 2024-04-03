@@ -11,6 +11,8 @@ use Exception;
 use DateTime;
 use Entity\Project;
 use Entity\Board;
+use Entity\Member;
+use Entity\UserInformation;
 use Firebase\JWT\ExpiredException;
 
 class ProjectStorage implements IProjectStorage
@@ -160,4 +162,26 @@ class ProjectStorage implements IProjectStorage
       throw new ExpiredException($e->getMessage(), 500);
     }
   }
+
+  public function getUserOfProject(String $project_id, int $limit, int $offset):array{
+    try{
+      $query = "select * from memberships join user_informations on memberships.user_id = user_informations.user_id where project_id = :project_id limit :limit offset :offset";
+       $stmt = $this->db->getConn()->prepare($query);
+       $stmt->bindParam(':project_id',$project_id, PDO::PARAM_STR);
+       $stmt->bindParam(':limit',$limit, PDO::PARAM_INT);
+       $stmt->bindParam(':offset',$offset, PDO::PARAM_INT);
+       $stmt->execute();
+       $users = [];
+       $data = $stmt->fetchAll();
+       foreach($data as $row){
+        $user = new Member($row['user_id'], $row['first_name'], $row['last_name'], $row['email'], $row['role'], $row['avatar_url'], $row['color']);
+        $users[] = $user;
+       }
+
+      return $users;
+    }catch(Exception $e){
+      throw new Exception($e->getMessage(), 500);
+    }
+  }
+
 }

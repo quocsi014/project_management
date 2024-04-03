@@ -50,4 +50,8 @@ class ProjectService{
     return $this->store->getProjectOfUser($workspace_id, $user_id);
   }
   
+  public function getUserOfProject(String $project_id,int $limit, int $offset):array{
+    return $this->store->getUserOfProject($project_id, $limit, $offset);
+  }
+  
 }

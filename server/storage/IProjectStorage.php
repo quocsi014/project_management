@@ -12,4 +12,5 @@ interface IProjectStorage{
   public function getAProject(String $projectID):Project;
   public function getAllProject(Int $limit, int $offset):array;
 public function getProjectOfUser(String $workspace_id, String $user_id):array;
+public function getUserOfProject(String $project_id, int $limit, int $offset):array;
 }
