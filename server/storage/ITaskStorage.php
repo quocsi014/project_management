@@ -11,4 +11,5 @@ interface ItaskStorage{
   public function updateAssignedUSer(String $assignedUserID,String $taskID):void;
   public function getTasksOfProjec(String $projectID):array;
   public function deleteTask(String $taskID):void;
+  
 }
