@@ -53,7 +53,7 @@ export default function (props) {
   }, [workspace_id]);
 
   return (
-    <div className="h-full w-56 bg-white border-r-2 border-solid border-gray-300 flex items-start flex-col px-4 py-4">
+    <div className="h-full w-56 bg-gray-200 border-r-2 border-solid border-gray-300 flex items-start flex-col px-4 py-4">
       <NavLink to={`/${workspace_id}/home`} className="w-full">
         {({ isActive }) => (
           <div

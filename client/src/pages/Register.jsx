@@ -35,6 +35,7 @@ export default function () {
         navigate("/verify?email=" + email);
       })
       .catch((error) => {
+        console.log(error);
         let status = error.response.status
         if(status == 409){
           setEmailErrorMsg("Email đã được sử dụng")

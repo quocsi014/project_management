@@ -26,7 +26,7 @@ function App() {
         <Navigation userID={userID}></Navigation>
         <div className="w-full h-full">
           <Routes>
-            <Route path="/:workspace_id/home" exact element={<Kanban/>}></Route>
+            <Route path="/:workspace_id/home" exact element={<Home/>}></Route>
             <Route path="/:workspace_id/task" element={<Task/>}></Route>
             <Route path="/:workspace_id/report" element={<Report/>}></Route>
             <Route path="/:workspace_id/:project_id/*" element={<Project/>}></Route>

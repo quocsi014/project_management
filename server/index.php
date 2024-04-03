@@ -309,17 +309,17 @@ $app->delete("/v1/projects/{project_id}/tasks/{task_id}/attachments/{attchment_i
 /*
 * *comment
 */
-$app->put("/v1/projects/{project_id}/tasks/{task_id}/comments/{comment_id}", function (Request $req, Response $res) use ($commentController) {
-  return $commentController->updateComment($req, $res);
-});
+// $app->put("/v1/projects/{project_id}/tasks/{task_id}/comments/{comment_id}", function (Request $req, Response $res) use ($commentController) {
+//   return $commentController->updateComment($req, $res);
+// });
 
-$app->delete("/v1/projects/{project_id}/tasks/{task_id}/comments/{comment_id}", function (Request $req, Response $res) use ($commentController) {
-  return $commentController->deleteComment($req, $res);
-});
+// $app->delete("/v1/projects/{project_id}/tasks/{task_id}/comments/{comment_id}", function (Request $req, Response $res) use ($commentController) {
+//   return $commentController->deleteComment($req, $res);
+// });
 
-$app->get("/v1/projects/{project_id}/tasks/{task_id}/comments", function (Request $req, Response $res) use ($commentController) {
-  return $commentController->getCommentOfComment($req, $res);
-});
+// $app->get("/v1/projects/{project_id}/tasks/{task_id}/comments", function (Request $req, Response $res) use ($commentController) {
+//   return $commentController->getCommentOfComment($req, $res);
+// });
 
 /* 
 * * OTP
