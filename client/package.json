@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.2",
+    "@syncfusion/ej2-react-gantt": "^18.4.49",
     "axios": "^1.6.8",
     "js-cookie": "^3.0.5",
     "moment": "^2.30.1",

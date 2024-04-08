@@ -1,224 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
-import TimeLine from "react-gantt-timeline";
 import "../../css/timeline.css";
-const config = {
-  header: {
-    top: {
-      style: {
-        backgroundColor: "#95aacd",
-        color: "white",
-        fontSize: 12
-      }
-    },
-    middle: {
-      style: {
-        backgroundColor: "lightgrey",
-        fontSize: 9
-      }
-    },
-    bottom: {
-      style: {
-        background: "white",
-        fontSize: 9,
-        color: "grey"
-      },
-      selectedStyle: {
-        background: "linear-gradient( #d011dd ,#d011dd)",
-        fontWeight: "bold",
-        color: "white"
-      }
-    }
-  },
-  taskList: {
-    title: {
-      label: "Stages",
-      style: {
-        backgroundColor: "#5b7bb2",
-        color: "White"
-      }
-    },
-    task: {
-      style: {
-        backgroundColor: "",
-        color: "black"
-      }
-    },
-    verticalSeparator: {
-      style: {
-        backgroundColor: "#fbf9f9"
-      },
-      grip: {
-        style: {
-          backgroundColor: "#5b7bb2"
-        }
-      }
-    }
-  },
-  dataViewPort: {
-    rows: {
-      style: {
-        backgroundColor: "white",
-        borderBottom: "solid 0.1px lightgrey"
-      }
-    },
-    task: {
-      showLabel: true,
-      style: {}
-    }
-  }
-};
-
-const MyGanttChart = () => {
-  let d1 = new Date();
-  let d2 = new Date();
-  d2.setDate(d2.getDate() + 5);
-  let d3 = new Date();
-  d3.setDate(d3.getDate() + 8);
-  let d4 = new Date();
-  d4.setDate(d4.getDate() + 20);
-  const data = [
-    {
-      id: 1,
-      start: d1,
-      end: d2,
-      name: 'Setup',
-      color: '#81c784',
-    },
-    {
-      id: 2,
-      start: d3,
-      end: d4,
-      name: 'Demo Task 2',
-      color: '#ffab00',
-    },
-    {
-      id: 3,
-      start: d3,
-      end: d4,
-      name: 'Demo Task 2',
-      color: '#ffab00',
-    },
-    {
-      id: 4,
-      start: d3,
-      end: d4,
-      name: 'Demo Task 2',
-      color: '#ffab00',
-    },
-  ];
-  const config = {
-    header: {
-      top: {
-        style: {
-          backgroundColor: "#95aacd",
-          color: "white",
-          fontSize: 12
-        }
-      },
-      middle: {
-        style: {
-          backgroundColor: "lightgrey",
-          fontSize: 9
-        }
-      },
-      bottom: {
-        style: {
-          background: "white",
-          fontSize: 9,
-          color: "grey"
-        },
-        selectedStyle: {
-          background: "linear-gradient( #d011dd ,#d011dd)",
-          fontWeight: "bold",
-          color: "white"
-        }
-      }
-    },
-    taskList: {
-      title: {
-        label: "Stages",
-        style: {
-          backgroundColor: "#5b7bb2",
-          color: "White"
-        }
-      },
-      task: {
-        style: {
-          backgroundColor: "",
-          color: "black"
-        }
-      },
-      verticalSeparator: {
-        style: {
-          backgroundColor: "#fbf9f9"
-        },
-        grip: {
-          style: {
-            backgroundColor: "#5b7bb2"
-          }
-        }
-      }
-    },
-    dataViewPort: {
-      rows: {
-        style: {
-          backgroundColor: "white",
-          borderBottom: "solid 0.1px lightgrey"
-        }
-      },
-      task: {
-        showLabel: true,
-        style: {}
-      }
-    }
-  };
-  const links = [];
-  return { data };
-};
+//, Toolbar, Selection 
+import { GanttComponent, ColumnsDirective, ColumnDirective, Edit, Inject } from '@syncfusion/ej2-react-gantt';
+import PropTypes from 'prop-types';
 
 export default function () {
-  const { data, config, links } = MyGanttChart(); // Gọi hàm MyGanttChart để lấy data
-  const buttonRef = useRef(null); // Ref cho main button
-  const [showDropdown, setShowDropdown] = useState(false); // Trạng thái của dropdown
   const [selectWidths, setSelectWidths] = useState('auto'); // Độ rộng của select
-
-
-  // Xử lý sự kiện khi click chuột ở bất kỳ đâu trên trang
-  const handleClickOutside = (event) => {
-    if (buttonRef.current && !buttonRef.current.contains(event.target)) {
-      setShowDropdown(false); // Ẩn nút phụ khi click chuột bên ngoài
-    }
-  };
-
-  // Sử dụng useEffect để thêm sự kiện click ngoài cùng cho window
-  useEffect(() => {
-    window.addEventListener('click', handleClickOutside);
-    return () => {
-      window.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
-
-  const handleButtonMainClick = () => {
-    setShowDropdown(!showDropdown); // Đảo ngược trạng thái của dropdown khi click vào button
-  };
 
   //xử lý sự kiện khi click select
   const handleSelectChange = (event) => {
     calculateSelectWidth(event.target);
   }
-  
-  useEffect(() => {
-    // Gọi hàm calculateSelectWidth() khi component được mount
-    calculateSelectWidth();
-    // Xóa sự kiện khi component unmount
-    return () => {
-      window.removeEventListener('resize', calculateSelectWidth);
-    };
-  }, []);
 
   function calculateSelectWidth(select = null) {
     if (!select) {
-      const selects = document.querySelectorAll('.custom-select'); // Lấy tất cả các select
+      const selects = document.querySelectorAll('.custom_select'); // Lấy tất cả các select
       selects.forEach(select => calculateSelectWidth(select)); // Tính độ rộng cho mỗi select
       return;
     }
@@ -238,7 +34,7 @@ export default function () {
     const paddingLeft = parseFloat(getComputedStyle(select).paddingLeft);
     const paddingRight = parseFloat(getComputedStyle(select).paddingRight);
     const padding = paddingLeft + paddingRight;
-    const width = temp.offsetWidth + padding + 1; // Thêm giá trị padding
+    const width = temp.offsetWidth + padding + 12; // Thêm giá trị padding
     document.body.removeChild(temp);
 
     setSelectWidths(prevWidths => ({
@@ -246,25 +42,80 @@ export default function () {
       [select.id]: width + "px" // Lưu độ rộng vào object selectWidths với key là id của select
     }));
   }
+
+  const CheckboxTemplate = ({ progress }) => (
+    <div className="flex items-center">
+      {progress === 100 ? (
+        <input type="checkbox" checked disabled className="form-checkbox h-4 w-4 text-indigo-600" />
+      ) : (
+        <input type="checkbox" disabled className="form-checkbox h-4 w-4 text-indigo-600" />
+      )}
+      <span className="ml-2">Hoàn thành</span>
+    </div>
+  );
+
+  //Gantt charts
+  const editOptions = {
+    allowEditing: true,
+    // allowAdding: true,
+    // allowDeleting: true,
+
+    allowTaskbarEditing: true
+  }
+
+  editOptions.propTypes = {
+    allowEditing: PropTypes.bool.isRequired
+  };
+
+  const SelfRefData = [
+    { TaskID: 1, TaskName: 'Project Initiation', StartDate: new Date('04/02/2024'), EndDate: new Date('04/21/2024') },
+    { TaskID: 2, TaskName: 'idnetify Site', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 50, ParentId: 1 },
+    { TaskID: 3, TaskName: 'Perform Soil', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 50, ParentId: 1 },
+    { TaskID: 4, TaskName: 'Soil test approval', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 50, ParentId: 1 },
+    { TaskID: 5, TaskName: 'Hihi', StartDate: new Date('04/10/2024'), EndDate: new Date('04/31/2024') },
+    { TaskID: 6, TaskName: 'Ai rảnh', StartDate: new Date('03/02/2024'), EndDate: new Date('04/01/2024') },
+    { TaskID: 7, TaskName: 'Đâu mà ghi hoài', StartDate: new Date('04/02/2024'), Duration: 3, Progress: 100, ParentId: 5 },
+    { TaskID: 8, TaskName: 'hihi', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 50, ParentId: 1 },
+    { TaskID: 9, TaskName: 'đồ ngốc', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 100, ParentId: 1 },
+  ];
+
+  const taskValues = {
+    id: "TaskID",
+    name: "TaskName",
+    startDate: "StartDate",
+    duration: "Duration",
+    endDate: "EndDate",
+    progress: "Progress",
+    parentId: "ParentId",
+    dependency: "Predecessor"
+  };
+
+  //kéo thả taskbar
+  const handleTaskbarEdit = (args) => {
+    // Thực hiện các hành động tương ứng khi task-bar được kéo và thả
+    console.log('Task bar edited:', args);
+    alert('Task bar has been edited!');
+  };
+
+
+  const handleTaskbarClick = (args) => {
+    // Thực hiện các hành động tương ứng khi task-bar được nhấp
+    console.log('Task bar clicked:', args);
+    alert('Task bar has been clicked!');
+  };
+
   return (
     <div className="flex flex-col justify-start w-full h-full">
-      <div class='toolbar'>
-        <div className='toolbar-left'>
-          <button className='addTask'>Thêm công việc</button>
-          <button ref={buttonRef} className='mainButton' onClick={handleButtonMainClick}>▼</button>
-
-          <div className="subButtonsContainer">
-            {showDropdown && (
-              <div>
-                <button className="subButton">Add section</button>
-                <button className="subButton">Add milestone</button>
-              </div>
-            )}
-          </div>
+      <div className="items-center mt-4 mb-4 flex relative" >
+        <div className="items-center flex mr-auto pr-2">
+          <button className="border-gray-300 border-2 border-solid ml-4 w-44 h-8 rounded-lg flex items-center px-3  focus:border-gray-700">
+            <img src="../../src/assets/add.png" alt="" className="w-6 h-6 mr-2" />
+            <span>Thêm công việc</span>
+          </button>
 
           <select
             id="select-task"
-            className="custom-select"
+            className="custom_select appearance-none bg-transparent border-2 border-gray-300 focus:border-gray-700 text-sm h-8 px-3 mr-5 mx-5 rounded-lg"
             onChange={handleSelectChange}
             style={{
               width: selectWidths["select-task"],
@@ -276,41 +127,33 @@ export default function () {
             <option>Đã hoàn thành</option>
           </select>
 
-          <select id="select-sort" className="custom-select"
-            onChange={handleSelectChange} style={{ width: selectWidths["select-sort"] }}
-          >
-            <option>Sắp xếp</option>
-            <option>Ngày bắt đầu</option>
-            <option>Ngày kết thúc</option>
-            <option>Người được phân công</option>
-          </select>
-
-          {/* 
         </div>
+      </div >
+      <div className='w-full'>
+        <GanttComponent
+          dataSource={SelfRefData}
+          taskFields={taskValues}
+          editSettings={editOptions}
+          taskbarEdited={handleTaskbarEdit} //thay đổi taskbar
+          onTaskbarClick={handleTaskbarClick} //cliked taskbar
+        >
+          {/* //, Toolbar, Selection */}
+          <Inject services={[Edit]}></Inject>
+          <ColumnsDirective>
+            <ColumnDirective field="TaskID" headerText="ID" visible={false} />
 
-        <div className='toolbar-right'>
-          <button id='btn-today'>Hôm nay</button>
+            <ColumnDirective field="TaskName" headerText="Name" />
+            {/* <ColumnDirective field="StartDate" headerText="start" /> */}
 
-          <select id="select-time" className="custom-select" onChange={handleSelectChange} style={{ width: selectWidths["select-time"] }}>
-            <option hidden disabled>Color:</option>
-            <option>Giờ</option>
-            <option>Ngày</option>
-            <option>Tuần</option>
-            <option>Tháng</option>
-            <option>Năm</option>
-          </select>
-
-          <select id="select-color" className="custom-select" onChange={handleSelectChange} style={{ width: selectWidths["select-color"] }}>
-            <option>Mặc định</option>
-            <option>Không màu</option>
-            <option>Xanh</option>
-            <option>vàng</option>
-          </select>*/}
-        </div>
-      </div>
-      <div className="flex flex-col justify-start items-center w-full">
-        <TimeLine data={data} links={links} config={config} />
+            <ColumnDirective
+              headerText="Status"
+              field='Progress'
+              template={(props) => <CheckboxTemplate progress={props.Progress} />}
+            />
+            <ColumnDirective field="Duration" />
+          </ColumnsDirective>
+        </GanttComponent>
       </div>
     </div>
-  )
+  );
 }
