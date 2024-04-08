@@ -2,6 +2,7 @@
 
 namespace Service;
 
+use DateTime;
 use Exception;
 
 use Storage\ITaskStorage;
@@ -42,4 +43,7 @@ class TaskService{
     $this->store->updateTask($task);
   }
 
+  public function getTaskOfProject(?String $project_id, ?int $status, ?String $assigneeID, ?DateTime $startDate, ?DateTime $endDate ):array{
+    return $this->store->getTasksOfProject($project_id, $status, $assigneeID, $startDate, $endDate);
+  }
 }

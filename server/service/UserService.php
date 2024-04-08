@@ -2,6 +2,7 @@
 
 namespace Service;
 
+use Entity\UserInformation;
 use Storage\IUserStorage;
 
 class UserService{
@@ -11,4 +12,9 @@ class UserService{
   {
     $this->store = $store;
   }
+
+  public function getAnUser(String $userID):UserInformation{
+    return $this->store->getAnUser($userID);
+  }
+  
 }

@@ -49,7 +49,7 @@ class ProjectController
       $createAt = DateTime::createFromFormat('Y-m-d H:i:s', $data->create_at);
     }
 
-    $project = new Project($data->project_id, $data->name, $data->description, $data->owner_id, $createAt);
+    $project = new Project($data->project_id, $data->name, $data->description, $data->owner_id, $createAt, $data->color);
 
     try {
       $this->service->CreateAproject($project);
@@ -112,11 +112,16 @@ class ProjectController
         throw new Exception("Description is required", 400);
       }
 
+      if(!isset($requestBody['color'])){
+        throw new Exception("Color is required", 400);
+      }
+
       $name = $requestBody['name'];
       $description = $requestBody['description'];
+      $color = $requestBody['color'];
       $projectID = $req->getAttribute('project_id');
 
-      $project = new Project($projectID, $name, $description, null, null);
+      $project = new Project($projectID, $name, $description, null, null, $color);
 
       $this->service->updateAProject($project);
       $res = $res->withStatus(200);

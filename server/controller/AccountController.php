@@ -63,6 +63,10 @@ class AccountController
         $res = $res->withStatus(500);
         $res->getBody()->write($e->getMessage());
       }
+      if ($e->getCode() == 404) {
+        $res = $res->withStatus(404);
+        $res->getBody()->write($e->getMessage());
+      }
       return $res;
     }
   }

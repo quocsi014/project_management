@@ -19,18 +19,19 @@ class UserStorage implements IUserStorage{
 
   }
 
-  public function getAnUser(int $userID):UserInformation{
+  public function getAnUser(String $userID):UserInformation{
     try{
       $query = "select * from user_informations where user_id = ?";
       $stmt = $this->db->getConn()->prepare($query);
       $stmt->execute([$userID]);
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
-      if(isset($result)){
-        return new UserInformation($userID, $result['first_name'], $result['last_name'], $result['job_title'], $result['avatar_url'], null, $result['color']);
+      if($result){
+        $user = new UserInformation($userID, $result['first_name'], $result['last_name'], $result['job_title'], $result['avatar_url'], null, $result['color']);
       }else{
         throw new Exception("No User Found", 404);
       }
+      return $user;
     }catch (PDOException $e){
       throw new Exception($e->getMessage(), 500);
     }
