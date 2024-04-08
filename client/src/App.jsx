@@ -9,24 +9,36 @@ import Workspace from "./layouts/Workspace.jsx";
 import Report from "./layouts/Report.jsx";
 import Project from "./layouts/Project.jsx";
 import Kanban from "./layouts/project_layouts/Kanban.jsx";
+import { getUserInformation } from "./service/userService.js";
+import { useDispatch } from "react-redux";
+import { setUser } from "./redux/store.js";
 
 function App() {
   let navigate = useNavigate();
   let [userID, setUserID] = useState(Cookies.get("user_id"))
   let [token, setToken] = useState(Cookies.get("token"))
+  const dispatch = useDispatch()
   useEffect(()=>{
-    if(userID == "" || token == ""){
+    if(!userID || !token){
       navigate("/login")
+    }else{
+      getUserInformation(userID)
+      .then(result=>{
+        dispatch(setUser(result.data))
+      })
+      .catch(error=>{
+        console.log(error)
+      })
     }
   },[])
   return (
-    <div className="w-screen h-screen flex flex-col">
+    <div className="w-screen h-screen flex flex-col overflow-hidden">
       <TopBar/>
-      <div className="h-full w-full flex">
+      <div className="h-full w-full flex overflow-hidden">
         <Navigation userID={userID}></Navigation>
-        <div className="w-full h-full">
+        <div className="w-full h-full overflow-hidden">
           <Routes>
-            <Route path="/:workspace_id/home" exact element={<Kanban/>}></Route>
+            <Route path="/:workspace_id/home" exact element={<Home/>}></Route>
             <Route path="/:workspace_id/task" element={<Task/>}></Route>
             <Route path="/:workspace_id/report" element={<Report/>}></Route>
             <Route path="/:workspace_id/:project_id/*" element={<Project/>}></Route>

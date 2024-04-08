@@ -48,7 +48,7 @@ class AccountStorage implements IAccountStorage{
       $stmt->execute([$email]);
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
-      if(isset($result)){
+      if($result){
         return new UserAccount($result['user_id'], $result['email'], $result['password']);
       }else{
         throw new Exception("No User Found", 404);

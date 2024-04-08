@@ -66,4 +66,22 @@ class WorkspaceController{
     }
   }
 
+  public function GetUserOfWorkspace(Request $req, Response $res){
+    try{
+      $workspace_id = $req->getAttribute('workspace_id');
+      $users = $this->service->GetUserOfWorkspace($workspace_id);
+      $res = $res->withStatus(200);
+      $res->getBody()->write(json_encode(array(
+        "users" => $users
+      )));
+      return $res;
+    }catch(Exception $e){
+      $res = $res->withStatus(500);
+
+      $res->getBody()->write($e->getMessage());
+      return $res;
+    }finally{
+    }
+  }
+
 }
