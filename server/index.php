@@ -109,6 +109,145 @@ $app->add(new CorsMiddleware([
   "credentials" => true,
   "cache" => 0,
 ]));
+// $app->group("/v1/workspaces", function ($workspace) {
+
+//   /*
+//    * Workspace 
+//    */
+//   $workspace->get("/");
+//   $workspace->post("/");
+
+//   /*
+//   * One workspace
+//   */
+//   $workspace->group("/{workspace_id}", function ($one_workspace) {
+
+//     $one_workspace->get("");
+//     $one_workspace->put("");
+//     $one_workspace->delete("");
+
+//     /*
+//     * Collaborators
+//     */
+//     $one_workspace->group("/collaborators", function ($members) {
+
+//       $members->get("/");
+//       $members->post("/");
+
+//       /*
+//       * One Collobarators
+//       */
+//       $members->group("/{collaborators_id}", function ($one_member) {
+
+//         $one_member->get("/");
+//         $one_member->put("/");
+//         $one_member->delete("/");
+//       });
+//     });
+
+//     /*
+//     * Projects
+//     */
+//     $one_workspace->group("/projects", function ($project) {
+
+//       $project->get("/");
+//       $project->post("/");
+
+//       $project->group("/{project_id}", function ($one_project) {
+
+//         $one_project->get("/");
+//         $one_project->put("/");
+//         $one_project->delete("/");
+
+//         $one_project->group("/tasks", function ($task) {
+
+//           $task->get("/");
+//           $task->post("/");
+
+//           $task->group("/{task_id}", function ($one_task) {
+
+//             $one_task->get("/");
+//             $one_task->put("/");
+//             $one_task->delete("/");
+
+//             $one_task("/activities", function ($activity) {
+//               $activity->get("/");
+//               $activity->post("/");
+//             });
+
+//             $one_task->group("/attachments", function ($attachment) {
+
+//               $attachment->get("/");
+//               $attachment->post("/");
+//               $attachment->delete("/{attachment_id");
+//             });
+
+//             $one_task("/comments", function ($comment) {
+
+//               $comment->get("/");
+//               $comment->post("/");
+
+//               $comment->group("/{comment_id}", function ($one_comment) {
+
+//                 $one_comment->put("/");
+//                 $one_comment->delete("/");
+//               });
+//             });
+
+//             $one_task->get("time_field");
+//             $one_task->put("/time_field/{time_field_id}");
+
+//           });
+//         });
+
+//         $one_project->group("/boards", function ($board) {
+//           $board->get("/");
+//           $board->post("/");
+
+//           $board->group("/{board_id}", function ($one_board) {
+//             $one_board->put("/");
+//             $one_board->delete("/");
+//           });
+//         });
+
+//         $one_project->group("/members", function ($member) {
+
+//           $member->get("/");
+//           $member->post("/");
+
+//           $member->group("/{member_id}", function ($one_member) {
+
+//             $one_member->get("/");
+//             $one_member->put("/");
+//             $one_member->delete("/");
+//           });
+//         });
+
+//         $one_project->group("task_fields", function ($task_field) {
+
+//           $task_field->get("/");
+//           $task_field->post("/");
+
+//           $task_field->put("/{task_field_id");
+//           $task_field->delete("/{task_field_id");
+
+//         });
+
+//       });
+//     });
+//   });
+// });
+
+// $app->group("/v1/users", function ($user) {
+//   $user->get("/");
+//   $user->put("/{user_id}");
+//   $user->post("/{user_id}/password");
+// });
+
+// $app->group("/v1/auth", function ($auth) {
+//   $auth->post("/login");
+//   $auth->post("register");
+// });
 
 $app->group("/v1/workspaces", function ($workspace) use ($workspaceController, $projectController, $boardController) {
 
@@ -117,7 +256,7 @@ $app->group("/v1/workspaces", function ($workspace) use ($workspaceController, $
   });
 
   $workspace->group("/{workspace_id}/projects", function ($project) use ($projectController, $boardController) {
-    
+
     /*
     * Create a project  
     */
@@ -130,6 +269,10 @@ $app->group("/v1/workspaces", function ($workspace) use ($workspaceController, $
     */
     $project->put("/{project_id}", function (Request $req, Response $res) use ($projectController) {
       return $projectController->updateProject($req, $res);
+    });
+
+    $project->get("/{project_id}/members", function (Request $req, Response $res) use ($projectController) {
+      return $projectController->GetUserOfProject($req, $res);
     });
 
     /*
@@ -167,6 +310,8 @@ $app->group("/v1/workspaces", function ($workspace) use ($workspaceController, $
     });
   });
 });
+
+
 $app->group("/v1/users", function ($user) use ($workspaceController, $projectController) {
   $user->get("/{user_id}/workspaces", function (Request $req, Response $res) use ($workspaceController) {
     return $workspaceController->GetWorkspacesOfUser($req, $res);

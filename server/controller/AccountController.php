@@ -63,6 +63,10 @@ class AccountController
         $res = $res->withStatus(500);
         $res->getBody()->write($e->getMessage());
       }
+      if ($e->getCode() == 404) {
+        $res = $res->withStatus(404);
+        $res->getBody()->write($e->getMessage());
+      }
       return $res;
     }
   }
@@ -98,7 +102,7 @@ class AccountController
     }
     $id = Uuid::uuid4();
     $user_account = new UserAccount($id, $data->account->email, $data->account->password);
-    $user_information = new UserInformation($id, $data->firstname, $data->lastname, null, null, $user_account);
+    $user_information = new UserInformation($id, $data->firstname, $data->lastname, null, null, $user_account, rand(0,131));
     try{
       $this->service->Register($user_information);
       $res = $res->withStatus(200);

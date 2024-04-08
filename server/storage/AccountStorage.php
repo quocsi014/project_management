@@ -20,9 +20,9 @@ class AccountStorage implements IAccountStorage{
   public function insertAnAccount(UserInformation $user_information):void{
     try{
       $this->db->getConn()->beginTransaction();
-      $query1 = "insert into user_informations values(?, ?, ?, ?)";
+      $query1 = "insert into user_informations values(?, ?, ?, ?, ?, ?)";
       $stmt1 = $this->db->getConn()->prepare($query1);
-      $stmt1->execute([$user_information->getUserID(), null, $user_information->getLastName(), $user_information->getFirstName()]);
+      $stmt1->execute([$user_information->getUserID(), null, $user_information->getLastName(), $user_information->getFirstName(), $user_information->getUserAccount()->getEmail(), intval(rand(0,131))]);
 
       $query2 = "insert into user_accounts values(?, ?, ?)";
       $stmt2 = $this->db->getConn()->prepare($query2);
@@ -48,7 +48,7 @@ class AccountStorage implements IAccountStorage{
       $stmt->execute([$email]);
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
-      if(isset($result)){
+      if($result){
         return new UserAccount($result['user_id'], $result['email'], $result['password']);
       }else{
         throw new Exception("No User Found", 404);
@@ -57,6 +57,7 @@ class AccountStorage implements IAccountStorage{
       throw new Exception($e->getMessage(), 500);
     }
   }
+
 
   public function updatePassword(UserAccount $user_account):void{
 

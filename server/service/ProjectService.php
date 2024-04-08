@@ -40,7 +40,13 @@ class ProjectService{
     if($project->getName() == ""){
       throw new Exception("Project name cannot be blank", 400);
     }
+
+    if($project->getColor() < 0 && $project->getColor()>36){
+      throw new Exception("Color must be 0 to 35", 400);
+    }
+
     $this->store->updateAProject($project);
+    
   }
   public function deleteAProject(Project $project){
     return $this->store->deleteAProject($project);
@@ -48,6 +54,10 @@ class ProjectService{
 
   public function GetProjectOfUser($workspace_id, $user_id){
     return $this->store->getProjectOfUser($workspace_id, $user_id);
+  }
+  
+  public function getUserOfProject(String $project_id,int $limit, int $offset):array{
+    return $this->store->getUserOfProject($project_id, $limit, $offset);
   }
   
 }
