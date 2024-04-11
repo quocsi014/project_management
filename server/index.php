@@ -256,7 +256,6 @@ $app->group("/v1/workspaces", function ($workspace) use ($workspaceController, $
   });
 
   $workspace->group("/{workspace_id}/projects", function ($project) use ($projectController, $boardController) {
-
     /*
     * Create a project  
     */
@@ -286,6 +285,13 @@ $app->group("/v1/workspaces", function ($workspace) use ($workspaceController, $
     * Get a project 
     */
     $project->get("/{project_id}", function (Request $req, Response $res) use ($projectController) {
+      return $projectController->getAProject($req, $res);
+    });
+
+    /*
+    * Get a project 
+    */
+    $project->get("", function (Request $req, Response $res) use ($projectController) {
       return $projectController->getAProject($req, $res);
     });
 

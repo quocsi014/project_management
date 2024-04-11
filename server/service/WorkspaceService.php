@@ -28,4 +28,9 @@ class WorkspaceService{
   public function GetWorkSpaceOfUser(String $user_id):Workspace{
     return $this->store->getDefaultWorkspaceOfUser($user_id);
   }
+
+  public function GetUserOfWorkspace(String $workspace_id):array{
+    return $this->store->getUserOfWorkspace($workspace_id);
+  }
+  
 }

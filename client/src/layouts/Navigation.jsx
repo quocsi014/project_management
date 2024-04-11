@@ -11,20 +11,22 @@ import {
 import { useEffect, useState } from "react";
 import { getWorksapceOfUser } from "../service/workspaceService";
 import { useDispatch, useSelector } from "react-redux";
-import { setWorkspaceID } from "../redux/store";
+import { setProjects } from "../redux/store";
 import { getProjectOfUser } from "../service/projectService";
+import { colorsArray } from "../resource/color";
 
 export default function (props) {
   let { userID } = props;
   const [workspaces, setWorkspaces] = useState([]);
-  const [projects, setProjects] = useState([]);
+
   const [workspace_id, setWorkspace_id] = useState("");
+  const projects = useSelector((state) => state.project.projects);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     getWorksapceOfUser(userID)
       .then((result) => {
-        console.log(result.data);
         setWorkspaces(result.data.workspaces);
         if (!localStorage.getItem("workspace_id")) {
           result.data.workspaces.forEach((value) => {
@@ -34,18 +36,16 @@ export default function (props) {
             }
           });
         } else {
-          dispatch(setWorkspaceID(localStorage.getItem("workspace_id")));
           setWorkspace_id(localStorage.getItem("workspace_id"));
         }
-        getProjectOfUser(localStorage.getItem('workspace_id'), userID)
-        .then(result=>{
-          setProjects(result.data.projects)
-          console.log(result)
-        })
-        .catch(error =>{
-          console.log(error)
-        })
-
+        getProjectOfUser(localStorage.getItem("workspace_id"), userID)
+          .then((result) => {
+            dispatch(setProjects({ projects: result.data.projects }));
+            console.log(result.data.projects);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
@@ -53,7 +53,7 @@ export default function (props) {
   }, [workspace_id]);
 
   return (
-    <div className="h-full w-56 bg-gray-200 border-r-2 border-solid border-gray-300 flex items-start flex-col px-4 py-4">
+    <div className="h-full w-56 hidden bg-white border-r-2 border-solid border-gray-300 xl:flex items-start flex-col px-4 py-4">
       <NavLink to={`/${workspace_id}/home`} className="w-full">
         {({ isActive }) => (
           <div
@@ -89,21 +89,28 @@ export default function (props) {
         )}
       </NavLink>
       <div className="w-full h-1px bg-gray-500 my-2"></div>
-      <div className="flex items-center text-2xl p-2 rounded-xl  ">
-         Dự án
+      <div className="flex items-center text-2xl p-2 rounded-xl font-bold">
+        Dự án
       </div>
-      <div className="flex flex-col w-full pl-8">
+      <div className="flex flex-col w-full">
         {projects.map((value) => {
           return (
-            <NavLink key={value.project_id} to={`/${workspace_id}/${value.project_id}`} className="w-full">
+            <NavLink
+              key={value.project_id}
+              to={`/${workspace_id}/${value.project_id}`}
+              className="w-full"
+            >
               {({ isActive }) => (
                 <div
-                  className={`flex items-center text-xl w-full p-2 rounded-xl whitespace-nowrap   ${
-                    isActive
-                      ? "bg-gray-700 text-white font-semibold"
-                      : "text-black"
+                  className={`text-xl w-full p-2 truncate flex items-center  ${
+                    isActive ? " text-black font-semibold" : "text-black"
                   }`}
                 >
+                  <div
+                    className={`${isActive ? "size-7" : "size-6"} ${
+                      colorsArray[value.color]
+                    } mr-3 rounded-md`}
+                  ></div>
                   {value.name}
                 </div>
               )}
@@ -112,16 +119,20 @@ export default function (props) {
         })}
       </div>
       <div className="w-full h-1px bg-gray-500 my-2"></div>
-      <div className="flex items-center text-2xl p-2 rounded-xl  ">
-         Workspaces
+      <div className="flex items-center text-2xl p-2 rounded-xl font-bold">
+        Workspaces
       </div>
-      <div className="flex flex-col w-full pl-8">
+      <div className="flex flex-col w-full">
         {workspaces.map((value) => {
           return (
-            <NavLink key={value.id} to={`/workspace/${value.id}`} className="w-full">
+            <NavLink
+              key={value.id}
+              to={`/workspace/${value.id}`}
+              className="w-full"
+            >
               {({ isActive }) => (
                 <div
-                  className={`flex items-center text-xl w-full p-2 rounded-xl whitespace-nowrap   ${
+                  className={`text-xl w-full p-2 rounded-xl truncate   ${
                     isActive
                       ? "bg-gray-700 text-white font-semibold"
                       : "text-black"

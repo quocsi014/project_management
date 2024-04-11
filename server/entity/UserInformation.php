@@ -92,8 +92,8 @@ class UserInformation implements JsonSerializable {
     public function jsonSerialize() {
         return [
             'user_id' => $this->userID,
-            'first_name' => $this->firstName,
-            'last_name' => $this->lastName,
+            'firstname' => $this->firstName,
+            'lastname' => $this->lastName,
             'job_title' => $this->jobTitle,
             'avatar_url' => $this->avatarURL,
             'user_account' => $this->userAccount,
