@@ -9,7 +9,7 @@ import TextCellGantt from '../../components/Timeline/TextCellGantt.jsx';
 import { useParams } from 'react-router-dom';
 export default function () {
   const [transformedTasks, setTransformedTasks] = useState([]);
-  const { workspace_id, project_id } = useParams;
+  const { workspace_id, project_id } = useParams();
 
   const taskValues = {
     id: "TaskID",
@@ -34,37 +34,46 @@ export default function () {
   }, []);
 
   const fetchData = async (statusTask) => {
-    try {
-      let response;
+    // try {
+    //   let response;
 
-      if (statusTask == null) {
-        response = await getTaskOfProject(
-          workspace_id,
-          project_id
-        );
-      } else {
-        response = await getTaskOfProject(
-          workspace_id,
-          project_id,
-          statusTask
-        );
-      }
+    //   if (statusTask == null) {
+    //     response = await getTaskOfProject(
+    //       workspace_id,
+    //       project_id
+    //     );
+    //   } else {
+    //     response = await getTaskOfProject(
+    //       workspace_id,
+    //       project_id,
+    //       statusTask
+    //     );
+    //   }
 
-      // Kiểm tra xem phản hồi có thành công không
-      if (response.status === 200) {
-        const tasks = response;
-        setTransformedTasks(transformData(tasks.data, taskFields));
-        console.log({tasks:tasks.data})
-      } else {
-        // Kiểm tra nội dung phản hồi để xác định lỗi
-        const error = response.data?.error || 'Unknown error occurred';
-        console.error('Failed to fetch data:', error);
-        alert('Failed to fetch data: ');
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      alert('Error fetching data: ');
-    }
+    //   // Kiểm tra xem phản hồi có thành công không
+    //   if (response.status === 200) {
+    //     const tasks = response;
+    //     setTransformedTasks(transformData(tasks.data, taskFields));
+    //     console.log({tasks:response})
+    //   } else {
+    //     // Kiểm tra nội dung phản hồi để xác định lỗi
+    //     const error = response.data?.error || 'Unknown error occurred';
+    //     console.error('Failed to fetch data:', error);
+    //     alert('Failed to fetch data: ');
+    //   }
+    // } catch (error) {
+    //   console.error('Error fetching data:', error);
+    //   alert('Error fetching data: ');
+    // }
+    getTaskOfProject(workspace_id, project_id)
+    .then(result=>{
+      console.log(result)
+      setTransformedTasks(transformData(result.data, taskFields))
+      alert("thanh cong")
+    })
+    .catch(err=>{
+      console.log(err)
+    })
   };
 
   const updateTaskAsync = async (args) => {
