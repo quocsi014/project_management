@@ -41,6 +41,7 @@ export default function () {
           setEmail('')
         }else{
           navigate('/internalservererror')
+          console.log(error)
         }
       })
       .finally(()=>{

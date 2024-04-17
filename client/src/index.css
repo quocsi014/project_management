@@ -9,3 +9,11 @@
     @apply font-roboto
   }
 }
+
+*{
+  scrollbar-width:none;
+}
+
+.rdp-day_selected{
+  background-color: #0000ff;
+}
