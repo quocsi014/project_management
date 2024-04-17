@@ -1,65 +1,137 @@
 import { useState, useEffect, useRef } from 'react';
-import "../../css/timeline.css";
-//, Toolbar, Selection 
 import { GanttComponent, ColumnsDirective, ColumnDirective, Edit, Inject } from '@syncfusion/ej2-react-gantt';
 import PropTypes from 'prop-types';
-
+import "../../css/timeline.css";
+import { getTaskOfProject, updateTask, updateTaskDate, updateTaskName } from '../../service/taskService.js';
+import CheckboxStatus from '../../components/Timeline/CheckboxStatus.jsx';
+import SelectSort from '../../components/Timeline/SelectSort.jsx';
+import TextCellGantt from '../../components/Timeline/TextCellGantt.jsx';
 export default function () {
-  const [selectWidths, setSelectWidths] = useState('auto'); // Độ rộng của select
+  // const { project_id, workspace_id } = useParams();
+  const [transformedTasks, setTransformedTasks] = useState([]);
+  const project_id = "1";
+  const workspace_id = "123";
+  // useEffect(() => {
+  //   document.getElementById("test").focus();
+  // }, []); // [] chỉ định rằng useEffect chỉ chạy một lần sau khi thành phần được render
 
-  //xử lý sự kiện khi click select
-  const handleSelectChange = (event) => {
-    calculateSelectWidth(event.target);
-  }
+  // useEffect(()=>{
+  //   getUserOfProject(workspace_id, project_id)
+  //         .then((result) => {
+  //           setMembers(result.data.users);
+  //         })
+  //         .catch((error) => {
+  //           console.log(error);
+  //         });
+  // },[useParams()]);
 
-  function calculateSelectWidth(select = null) {
-    if (!select) {
-      const selects = document.querySelectorAll('.custom_select'); // Lấy tất cả các select
-      selects.forEach(select => calculateSelectWidth(select)); // Tính độ rộng cho mỗi select
-      return;
+  // Gọi hàm fetchData() khi component được tải lần đầu
+  useEffect(() => {
+    fetchData(null);
+  }, []);
+
+  const fetchData = async (statusTask) => {
+    try {
+      let response;
+
+      if (statusTask == null) {
+        response = await getTaskOfProject(
+          workspace_id,
+          project_id
+        );
+      } else {
+        response = await getTaskOfProject(
+          workspace_id,
+          project_id,
+          statusTask
+        );
+      }
+
+      // Kiểm tra xem phản hồi có thành công không
+      if (response.status === 200) {
+        const tasks = response;
+        setTransformedTasks(transformData(tasks.data, taskFields));
+      } else {
+        // Kiểm tra nội dung phản hồi để xác định lỗi
+        const error = response.data?.error || 'Unknown error occurred';
+        console.error('Failed to fetch data:', error);
+        alert('Failed to fetch data: ');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      alert('Error fetching data: ');
     }
+  };
 
-    const selectedOption = select.options[select.selectedIndex];
+  const updateTaskAsync = async (args) => {
+    try {
+      const { TaskID, Name, StartDate, EndDate, Status } = args;
+      const statrDateString = formatDate(StartDate);
+      const endDateString = formatDate(EndDate);
+      const response = await updateTask(workspace_id, project_id, TaskID, Name, statrDateString, endDateString, Status);
+      // alert("Cập nhật thành công");
+      fetchData(null);
+    } catch (error) {
+      alert("Xảy ra lỗi khi cập nhật")
+      console.error("Lỗi khi cập nhật công việc", error);
+    }
+  };
 
-    // Tạo một span tạm thời để tính toán độ rộng
-    const temp = document.createElement("span");
-    temp.style.visibility = "hidden";
-    temp.style.fontSize = "13px";
-    temp.style.whiteSpace = "nowrap"; // Ngăn không gian trắng tự động được thêm vào
-    temp.textContent = selectedOption.textContent; // Sử dụng textContent thay vì innerHTML để tránh xử lý HTML
+  // Hàm callback để cập nhật statusTask từ component con lên component cha
+  const updateStatusOption = (statusOption) => {
+    fetchData( statusOption );
+  };
 
-    document.body.appendChild(temp);
+  const updateCell = async (taskID, nameTask, isDuration, endDate) => {
+    try {
+      let response;
 
-    // Tính toán chiều rộng của select box với padding và font size
-    const paddingLeft = parseFloat(getComputedStyle(select).paddingLeft);
-    const paddingRight = parseFloat(getComputedStyle(select).paddingRight);
-    const padding = paddingLeft + paddingRight;
-    const width = temp.offsetWidth + padding + 12; // Thêm giá trị padding
-    document.body.removeChild(temp);
-
-    setSelectWidths(prevWidths => ({
-      ...prevWidths,
-      [select.id]: width + "px" // Lưu độ rộng vào object selectWidths với key là id của select
-    }));
+      if (isDuration != null) {
+        if (isWeekend(new Date(isDuration)) || isWeekend(new Date(endDate))) {
+          alert("Ngày bắt đầu hoặc ngày kết thúc công việc không rơi vào cuối tuần.")
+          return ;
+        } else {
+          const startString = formatDate(isDuration);
+          const endString = formatDate(endDate);
+          response = await updateTaskDate(workspace_id, project_id, taskID, startString, endString);
+        }
+      } else {
+        response = await updateTaskName(workspace_id, project_id, taskID, nameTask);
+      }
+      if (response.status === 200) {
+        alert("Cập nhật thành công");
+        fetchData(null);
+      }
+    } catch (error) {
+      alert("Xảy ra lỗi khi cập nhật")
+      console.error("Lỗi khi cập nhật công việc", error);
+    }
   }
 
-  const CheckboxTemplate = ({ progress }) => (
-    <div className="flex items-center">
-      {progress === 100 ? (
-        <input type="checkbox" checked disabled className="form-checkbox h-4 w-4 text-indigo-600" />
-      ) : (
-        <input type="checkbox" disabled className="form-checkbox h-4 w-4 text-indigo-600" />
-      )}
-      <span className="ml-2">Hoàn thành</span>
-    </div>
-  );
+  const isWeekend = (date) => {
+    const dayOfWeek = date.getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6; // 0 là Chủ nhật, 6 là Thứ 7
+  };
+
+  function formatDate(date) {
+    // Kiểm tra xem ngày đầu vào có tồn tại hay không
+    if (!date) return null;
+
+    const new_date = new Date(date);
+
+    const year = new_date.getFullYear();
+    const month = new_date.getMonth() + 1;
+    const day = new_date.getDate();
+
+    // Định dạng lại ngày theo mong muốn
+    const formattedEndDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+
+    return formattedEndDate;
+  };
 
   //Gantt charts
   const editOptions = {
-    allowEditing: true,
-    // allowAdding: true,
-    // allowDeleting: true,
-
+    allowEditing: false,
     allowTaskbarEditing: true
   }
 
@@ -67,42 +139,108 @@ export default function () {
     allowEditing: PropTypes.bool.isRequired
   };
 
-  const SelfRefData = [
-    { TaskID: 1, TaskName: 'Project Initiation', StartDate: new Date('04/02/2024'), EndDate: new Date('04/21/2024') },
-    { TaskID: 2, TaskName: 'idnetify Site', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 50, ParentId: 1 },
-    { TaskID: 3, TaskName: 'Perform Soil', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 50, ParentId: 1 },
-    { TaskID: 4, TaskName: 'Soil test approval', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 50, ParentId: 1 },
-    { TaskID: 5, TaskName: 'Hihi', StartDate: new Date('04/10/2024'), EndDate: new Date('04/31/2024') },
-    { TaskID: 6, TaskName: 'Ai rảnh', StartDate: new Date('03/02/2024'), EndDate: new Date('04/01/2024') },
-    { TaskID: 7, TaskName: 'Đâu mà ghi hoài', StartDate: new Date('04/02/2024'), Duration: 3, Progress: 100, ParentId: 5 },
-    { TaskID: 8, TaskName: 'hihi', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 50, ParentId: 1 },
-    { TaskID: 9, TaskName: 'đồ ngốc', StartDate: new Date('04/02/2024'), Duration: 4, Progress: 100, ParentId: 1 },
-  ];
 
   const taskValues = {
     id: "TaskID",
-    name: "TaskName",
+    name: "Name",
     startDate: "StartDate",
-    duration: "Duration",
+    due: "Due",
     endDate: "EndDate",
-    progress: "Progress",
-    parentId: "ParentId",
-    dependency: "Predecessor"
+    status: "Status"
   };
+
+  const taskFields = {
+    TaskID: "task_id",
+    Name: "task_name",
+    StartDate: "start_date",
+    EndDate: "end_date",
+    Status: "status"
+  };
+
+  const transformData = (data, taskFields) => {
+    return data.map(item => {
+      const transformedItem = {};
+      Object.entries(taskFields).forEach(([key, value]) => {
+        if (value in item) {
+
+          if (key === 'StartDate' || key === 'EndDate') {
+            const dateString = item[value];
+            const [year, month, day] = dateString.split('-');
+            const date = new Date(year, month - 1, day);
+
+            // Định dạng lại ngày theo mong muốn
+            const formattedDate = date.toString(); // Đổi thành chuỗi ngày tháng đầy đủ
+            transformedItem[key] = formattedDate;
+          } else {
+            transformedItem[key] = item[value];
+          }
+        }
+      });
+
+      // Tính toán trường "Duration" ở đây, sau khi đã chuyển đổi "StartDate" và "EndDate"
+      const startDate = new Date(transformedItem['StartDate']);
+      const endDate = new Date(transformedItem['EndDate']);
+      let workDays = 0;
+      let currentDate = startDate;
+      while (currentDate < endDate) {
+        workDays++;
+        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
+      }
+      transformedItem['Due'] = workDays;
+
+
+      return transformedItem;
+    });
+  };
+
+
+
 
   //kéo thả taskbar
   const handleTaskbarEdit = (args) => {
-    // Thực hiện các hành động tương ứng khi task-bar được kéo và thả
-    console.log('Task bar edited:', args);
-    alert('Task bar has been edited!');
+    updateTaskAsync(args.data);
+    console.log('Task bar edited:', args.data);
   };
 
+  // Xử lý sự kiện khi taskbar được kéo
+  const handleTaskbarEditing = (args) => {
+    const { taskData } = args;
+    // Kiểm tra xem taskData có tồn tại và có chứa thông tin về ngày kết thúc không
+    if (taskData && taskData.EndDate) {
+      console.log(hihi)
+      const endDate = taskData.EndDate;
+      // Kiểm tra xem ngày cuối cùng của taskbar có phải là cuối tuần không
+      if (isWeekend(endDate)) {
+        // Ngăn chặn việc kéo thả taskbar vào ngày cuối tuần
+        args.cancel = true;
+        alert("Không thể kéo thả taskbar vào ngày cuối tuần!");
+      }
+    }
+  }
 
   const handleTaskbarClick = (args) => {
     // Thực hiện các hành động tương ứng khi task-bar được nhấp
     console.log('Task bar clicked:', args);
+    console.log(transformedTasks);
     alert('Task bar has been clicked!');
   };
+
+  const handleEndEdit = (args) => {
+    console.log('Cell editing ended:', args);
+    updateTaskAsync(args.data);
+  };
+
+  const onActionBegin = (args) => {
+    if (args.requestType === 'dragging') {
+      const task = args.data;
+      // Kiểm tra nếu bắt đầu vào thứ 7 hoặc kết thúc vào chủ nhật, thì không cho phép kéo và thả
+      const startDate = new Date(task.StartDate);
+      const endDate = new Date(task.EndDate);
+      if (startDate.getDay() === 6 || endDate.getDay() === 0) {
+        args.cancel = false; // Hủy sự kiện kéo và thả
+      }
+    }
+  }
 
   return (
     <div className="flex flex-col justify-start w-full h-full">
@@ -112,48 +250,71 @@ export default function () {
             <img src="../../src/assets/add.png" alt="" className="w-6 h-6 mr-2" />
             <span>Thêm công việc</span>
           </button>
-
-          <select
-            id="select-task"
-            className="custom_select appearance-none bg-transparent border-2 border-gray-300 focus:border-gray-700 text-sm h-8 px-3 mr-5 mx-5 rounded-lg"
-            onChange={handleSelectChange}
-            style={{
-              width: selectWidths["select-task"],
-              backgroundImage: 'url("./checked.png")'
-            }}
+          <SelectSort
+            updateStatusOption={updateStatusOption}
           >
-            <option>Tất cả</option>
-            <option>Chưa hoàn thành</option>
-            <option>Đã hoàn thành</option>
-          </select>
-
+          </SelectSort>
         </div>
       </div >
-      <div className='w-full'>
-        <GanttComponent
-          dataSource={SelfRefData}
-          taskFields={taskValues}
-          editSettings={editOptions}
-          taskbarEdited={handleTaskbarEdit} //thay đổi taskbar
-          onTaskbarClick={handleTaskbarClick} //cliked taskbar
-        >
-          {/* //, Toolbar, Selection */}
-          <Inject services={[Edit]}></Inject>
-          <ColumnsDirective>
-            <ColumnDirective field="TaskID" headerText="ID" visible={false} />
-
-            <ColumnDirective field="TaskName" headerText="Name" />
-            {/* <ColumnDirective field="StartDate" headerText="start" /> */}
-
-            <ColumnDirective
-              headerText="Status"
-              field='Progress'
-              template={(props) => <CheckboxTemplate progress={props.Progress} />}
-            />
-            <ColumnDirective field="Duration" />
-          </ColumnsDirective>
-        </GanttComponent>
-      </div>
+      {/* {loading ? (
+        <div></div>
+      ) : ( */}
+        <div className='w-full h-full flex flex-col' >
+          <GanttComponent
+            actionBegin={onActionBegin}
+            dataSource={transformedTasks}
+            taskFields={taskValues}
+            editSettings={editOptions}
+            taskbarEdited={handleTaskbarEdit} //thay đổi taskbar sau khi chỉnh sửa taskbar
+            taskbarEditing={handleTaskbarEditing}
+            onTaskbarClick={handleTaskbarClick} //cliked taskbar
+            endEdit={handleEndEdit} // Bắt sự kiện khi người dùng hoàn thành chỉnh sửa nội dung của các ô trong cột
+            style={{ flex: 1 }} // Tự mở rộng chiều dọc
+            allowKeyboard={false}
+            timelineSettings={{
+              timelineViewMode: 'Week', // Chế độ hiển thị theo tuần
+              topTier: {
+                unit: 'Month', // Đơn vị của Top tier là tháng
+                format: 'MM-yyyy',
+              },
+              bottomTier: {
+                unit: 'Day', // Đơn vị của Bottom tier cũng là ngày
+                format: 'dd', // Định dạng ngày chỉ hiển thị ngày trong tháng
+              }
+            }}
+          >
+            <Inject services={[Edit]} ></Inject>
+            <ColumnsDirective>
+              <ColumnDirective field="TaskID" headerText="ID" visible={false} />
+              <ColumnDirective field="Name" headerText="Tên"
+                template={(props) => <TextCellGantt
+                  taskID={props.TaskID}
+                  name={props.Name}
+                  isDuration={null}
+                  updateCell={updateCell}
+                />}
+              />
+              <ColumnDirective
+                headerText="Trạng thái"
+                field='Status'
+                template={(props) => <CheckboxStatus
+                  workspaceID={workspace_id}
+                  projectID={project_id}
+                  taskID={props.TaskID}
+                  status={props.Status} />}
+              />
+              <ColumnDirective field="Due" headerText="Khoảng thời gian"
+                template={(props) => <TextCellGantt
+                  taskID={props.TaskID}
+                  name={props.Due + " days"}
+                  isDuration={props.StartDate}
+                  updateCell={updateCell}
+                />}
+              />
+            </ColumnsDirective>
+          </GanttComponent>
+        </div>
+      {/* )} */}
     </div>
   );
 }
