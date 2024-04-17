@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { BiSortAlt2 } from 'react-icons/bi'
 
-export default function SelectSort({updateStatusOption}) {
+export default function SelectSort({ updateStatusOption }) {
   const selectRef = useRef(null); // Tạo một ref cho select element
   const [selectWidth, setSelectWidth] = useState('auto'); // Độ rộng của select
 
@@ -10,36 +11,39 @@ export default function SelectSort({updateStatusOption}) {
   }, [selectRef]);
 
   return (
-    <select
-      ref={selectRef} // Gán ref cho select element
-      id="select-task"
-      className="custom_select appearance-none bg-transparent border-2 border-gray-300 focus:border-gray-700 text-sm h-8 px-3 mr-5 mx-5 rounded-lg"
-      onChange={handleSelectChange}
-      style={{
-        width: selectWidth, // Đặt độ rộng trực tiếp từ selectWidth
-      }}
-    >
-      <option value="all">Tất cả</option>
-      <option value="incomplete">Chưa hoàn thành</option>
-      <option value="complete">Đã hoàn thành</option>
-    </select>
+    <div className="relative">
+      <select
+        ref={selectRef}
+        id="select-task"
+        className="custom_select appearance-none bg-transparent border-2 border-gray-200 focus:border-gray-200 focus:outline-none text-sm h-8 pl-8 pr-3 rounded-lg"
+        onChange={handleSelectChange}
+        style={{ width: selectWidth }}
+      >
+        <option value="all">Tất cả</option>
+        <option value="incomplete">Chưa hoàn thành</option>
+        <option value="complete">Đã hoàn thành</option>
+      </select>
+      <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+        <BiSortAlt2 className="text-gray-500" />
+      </div>
+    </div>
   );
 
-    // Hàm xử lý sự kiện khi select thay đổi
-    function handleSelectChange(event) {
-      const selectedValue = event.target.value;
-      let statusTask = null;
-      if (selectedValue == "all"){
-        statusTask = null;
-      }
-      else if (selectedValue == "incomplete") {
-        statusTask = 0;
-      } else {
-        statusTask = 1;
-      }
-      updateStatusOption(statusTask); // Gọi hàm callback để cập nhật statusTask lên component cha
-      calculateSelectWidth();
+  // Hàm xử lý sự kiện khi select thay đổi
+  function handleSelectChange(event) {
+    const selectedValue = event.target.value;
+    let statusTask = null;
+    if (selectedValue == "all") {
+      statusTask = null;
     }
+    else if (selectedValue == "incomplete") {
+      statusTask = 0;
+    } else {
+      statusTask = 1;
+    }
+    updateStatusOption(statusTask); // Gọi hàm callback để cập nhật statusTask lên component cha
+    calculateSelectWidth();
+  }
 
   function calculateSelectWidth() {
     const select = selectRef.current; // Lấy tham chiếu đến select element từ ref
