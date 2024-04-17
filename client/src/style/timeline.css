@@ -1,0 +1,8 @@
+@import url("https://cdn.syncfusion.com/ej2/material.css");
+.e-splitter .e-split-bar.e-split-bar-horizontal.e-split-bar-hover, .e-splitter .e-split-bar.e-split-bar-horizontal.e-split-bar-active {
+  background: #5869c5;
+}
+.e-splitter .e-split-bar.e-split-bar-horizontal.e-split-bar-hover .e-resize-handler, .e-splitter .e-split-bar.e-split-bar-horizontal.e-split-bar-active .e-resize-handler {
+  background: #fff;
+  color: #5869c5;
+}

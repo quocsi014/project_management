@@ -1,6 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie"
 
+
 export const login = (email, password) => {
   let body = { email, password };
   return axios.post("http://localhost:8080/v1/login", body);

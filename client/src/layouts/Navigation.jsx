@@ -41,7 +41,6 @@ export default function (props) {
         getProjectOfUser(localStorage.getItem("workspace_id"), userID)
           .then((result) => {
             dispatch(setProjects({ projects: result.data.projects }));
-            console.log(result.data.projects);
           })
           .catch((error) => {
             console.log(error);
@@ -88,7 +87,7 @@ export default function (props) {
           </div>
         )}
       </NavLink>
-      <div className="w-full h-1px bg-gray-500 my-2"></div>
+      <div className="w-full h-1px  bg-gray-500 my-2"></div>
       <div className="flex items-center text-2xl p-2 rounded-xl font-bold">
         Dự án
       </div>
@@ -102,22 +101,25 @@ export default function (props) {
             >
               {({ isActive }) => (
                 <div
-                  className={`text-xl w-full p-2 truncate flex items-center  ${
+                  className={`text-xl w-full p-2 flex  items-center ${
                     isActive ? " text-black font-semibold" : "text-black"
                   }`}
                 >
                   <div
-                    className={`${isActive ? "size-7" : "size-6"} ${
+                    className={`${isActive ? "scale-125" : ""} ${
                       colorsArray[value.color]
-                    } mr-3 rounded-md`}
+                    } size-6 rounded-md flex-shrink-0`}
                   ></div>
-                  {value.name}
+                  
+                  <div className="ml-3 truncate">{value.name}</div>
+                  
                 </div>
               )}
             </NavLink>
           );
         })}
       </div>
+      <div className="w-full h-1px bg-white my-2"></div>
       <div className="w-full h-1px bg-gray-500 my-2"></div>
       <div className="flex items-center text-2xl p-2 rounded-xl font-bold">
         Workspaces

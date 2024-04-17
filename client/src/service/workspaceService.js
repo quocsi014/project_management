@@ -5,5 +5,5 @@ export const getWorksapceOfUser = (userID) => {
 }
 
 export const getUserOfWorkspace = (workspace_id)=>{
-  return axios.get(`http://localhost:8080/v1/workspaces/${workspace_id}/members`)
+  return axios.get(`http://localhost:8080/v1/workspaces/${workspace_id}/collaborators`)
 }
