@@ -26,8 +26,8 @@ import { updateStatus } from "../../redux/store";
 import { v4 as uuidv4 } from "uuid";
 
 export default function (props) {
-  const { setAddMemberOpen, members, project } = props;
-
+  // const { setAddMemberOpen, members, project } = props;
+  const { setAddMemberOpen, members} = props;
   const { project_id, workspace_id } = useParams();
 
   const [isOpen, setIsOpen] = useState(false);

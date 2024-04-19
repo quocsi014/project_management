@@ -70,21 +70,22 @@ export default function (props) {
       });
   }, [project_id]);
 
-  return project ? (
+  // return project ? (
+    return (
     <div className="w-full h-full flex flex-col overflow-hidden relative">
-      <AddMember
+      {/* <AddMember
         isOpen={addMemberOpened}
         setIsOpen={setAddMemberOpened}
         members={members}
         setMembers={setMembers}
-      />
-      <ProjectNavigation
+      /> */}
+      {/* <ProjectNavigation
         project_id={project_id}
         workspace_id={workspace_id}
         setAddMemberOpen={setAddMemberOpened}
         members={members}
         project={project}
-      ></ProjectNavigation>
+      ></ProjectNavigation> */}
       <div className="w-full h-full flex overflow-hidden">
         <Routes>
           <Route
@@ -108,7 +109,8 @@ export default function (props) {
 
       </div>
     </div>
-  ) : (
-    <div className="w-full h-full bg-white"></div>
-  );
+    );
+  // ) : (
+  //   <div className="w-full h-full bg-white"></div>
+  // );
 }

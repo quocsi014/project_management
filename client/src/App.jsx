@@ -19,19 +19,19 @@ function App() {
   let [token, setToken] = useState(Cookies.get("token"))
   const dispatch = useDispatch()
 
-  useEffect(()=>{
-    if(!userID || !token){
-      navigate("/login")
-    }else{
-      getUserInformation(userID)
-      .then(result=>{
-        dispatch(setUser(result.data))
-      })
-      .catch(error=>{
-        console.log(error)  
-      })
-    }
-  },[])
+  // useEffect(()=>{
+  //   if(!userID || !token){
+  //     navigate("/login")
+  //   }else{
+  //     getUserInformation(userID)
+  //     .then(result=>{
+  //       dispatch(setUser(result.data))
+  //     })
+  //     .catch(error=>{
+  //       console.log(error)  
+  //     })
+  //   }
+  // },[])
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden relative">
       <Notifications/>
