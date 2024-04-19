@@ -7,6 +7,8 @@ import CheckboxStatus from '../../components/Timeline/CheckboxStatus.jsx';
 import SelectSort from '../../components/Timeline/SelectSort.jsx';
 import TextCellGantt from '../../components/Timeline/TextCellGantt.jsx';
 import { useParams } from 'react-router-dom';
+import { BiPlus } from 'react-icons/bi'
+
 export default function () {
   const [transformedTasks, setTransformedTasks] = useState([]);
   const { workspace_id, project_id } = useParams();
@@ -34,46 +36,32 @@ export default function () {
   }, []);
 
   const fetchData = async (statusTask) => {
-    // try {
-    //   let response;
+    try {
+      let response;
 
-    //   if (statusTask == null) {
-    //     response = await getTaskOfProject(
-    //       workspace_id,
-    //       project_id
-    //     );
-    //   } else {
-    //     response = await getTaskOfProject(
-    //       workspace_id,
-    //       project_id,
-    //       statusTask
-    //     );
-    //   }
+      if (statusTask == null) {
+        response = await getTaskOfProject(
+          workspace_id,
+          project_id
+        );
+      } else {
+        response = await getTaskOfProject(
+          workspace_id,
+          project_id,
+          statusTask
+        );
+      }
 
-    //   // Kiểm tra xem phản hồi có thành công không
-    //   if (response.status === 200) {
-    //     const tasks = response;
-    //     setTransformedTasks(transformData(tasks.data, taskFields));
-    //     console.log({tasks:response})
-    //   } else {
-    //     // Kiểm tra nội dung phản hồi để xác định lỗi
-    //     const error = response.data?.error || 'Unknown error occurred';
-    //     console.error('Failed to fetch data:', error);
-    //     alert('Failed to fetch data: ');
-    //   }
-    // } catch (error) {
-    //   console.error('Error fetching data:', error);
-    //   alert('Error fetching data: ');
-    // }
-    getTaskOfProject(workspace_id, project_id)
-    .then(result=>{
-      console.log(result)
-      setTransformedTasks(transformData(result.data, taskFields))
-      alert("thanh cong")
-    })
-    .catch(err=>{
-      console.log(err)
-    })
+      console.log(response.data)
+      // Kiểm tra xem phản hồi có thành công không
+      if (response.status === 200) {
+        const tasks = response;
+        setTransformedTasks(transformData(tasks.data, taskFields));
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      alert('Error fetching data: ');
+    }
   };
 
   const updateTaskAsync = async (args) => {
@@ -112,7 +100,6 @@ export default function () {
         response = await updateTaskName(workspace_id, project_id, taskID, nameTask);
       }
       if (response.status === 200) {
-        alert("Cập nhật thành công");
         fetchData(null);
       }
     } catch (error) {
@@ -148,7 +135,6 @@ export default function () {
       const transformedItem = {};
       Object.entries(taskFields).forEach(([key, value]) => {
         if (value in item) {
-
           if (key === 'StartDate' || key === 'EndDate') {
             const dateString = item[value];
             const [year, month, day] = dateString.split('-');
@@ -156,6 +142,7 @@ export default function () {
 
             // Định dạng lại ngày theo mong muốn
             const formattedDate = date.toString(); // Đổi thành chuỗi ngày tháng đầy đủ
+
             transformedItem[key] = formattedDate;
           } else {
             transformedItem[key] = item[value];
@@ -173,7 +160,6 @@ export default function () {
         currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
       }
       transformedItem['Due'] = workDays;
-
 
       return transformedItem;
     });
@@ -224,19 +210,14 @@ export default function () {
     <div className="flex flex-col justify-start w-full h-full">
       <div className="items-center mt-4 mb-4 flex relative" >
         <div className="items-center flex mr-auto pr-2">
-          <button className="border-gray-300 border-2 border-solid ml-4 w-44 h-8 rounded-lg flex items-center px-3  focus:border-gray-700">
-            <img src="../../src/assets/add.png" alt="" className="w-6 h-6 mr-2" />
-            <span>Thêm công việc</span>
+          <button className="flex items-center border-2 py-1 px-2 ml-4 border-gray-400 text-sm rounded-md mr-3">
+            <BiPlus />Thêm công việc
           </button>
-          <SelectSort
-            updateStatusOption={updateStatusOption}
-          >
-          </SelectSort>
+          <SelectSort updateStatusOption={updateStatusOption}/>
         </div>
       </div >
-      {/* {loading ? (
-        <div></div>
-      ) : ( */}
+
+      {/* Gantt timeline */}
       <div className='w-full h-full flex flex-col' >
         <GanttComponent
           actionBegin={onActionBegin}
@@ -291,7 +272,6 @@ export default function () {
           </ColumnsDirective>
         </GanttComponent>
       </div>
-      {/* )} */}
     </div>
   );
 }
