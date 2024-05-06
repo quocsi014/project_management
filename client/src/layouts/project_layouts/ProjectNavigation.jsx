@@ -150,7 +150,7 @@ export default function (props) {
           </span>
           <div className="flex items-center">
             <NavLink
-              to={`/${workspace_id}/${project_id}/overview`}
+              to={``}
               className="mr-8"
             >
               {({ isActive }) => (

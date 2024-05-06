@@ -4,7 +4,7 @@ export default function(props){
   const { firstname, lastname, avatarUrl, email, color } = props;
   return(
 
-    <div className="flex">
+    <div className="flex items-center">
 
         <Avatar
           firstName={firstname}
@@ -15,10 +15,10 @@ export default function(props){
         />
 
         <div className="ml-2">
-          <div className="">
+          <div className="truncate w-32">
             {firstname} {lastname}
           </div>
-          <div className="text-xs">{email}</div>
+          <div className="text-xs truncate max-32">{email}</div>
         </div>
         
       </div>

@@ -19,19 +19,19 @@ function App() {
   let [token, setToken] = useState(Cookies.get("token"))
   const dispatch = useDispatch()
 
-  useEffect(()=>{
-    if(!userID || !token){
-      navigate("/login")
-    }else{
-      getUserInformation(userID)
-      .then(result=>{
-        dispatch(setUser(result.data))
-      })
-      .catch(error=>{
-        console.log(error)  
-      })
-    }
-  },[])
+  // useEffect(()=>{
+  //   if(!userID || !token){
+  //     navigate("/login")
+  //   }else{
+  //     getUserInformation(userID)
+  //     .then(result=>{
+  //       dispatch(setUser(result.data))
+  //     })
+  //     .catch(error=>{
+  //       console.log(error)  
+  //     })
+  //   }
+  // },[])
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden relative">
       <Notifications/>
@@ -44,8 +44,7 @@ function App() {
             <Route path="/:workspace_id/task" element={<Task/>}></Route>
             <Route path="/:workspace_id/report" element={<Report/>}></Route>
             <Route path="/:workspace_id/:project_id/*" element={<Project/>}></Route>
-            <Route path="/workspace/:workspace_id" element={<Workspace/>}></Route>
-
+            <Route path="/workspace/:workspace_id/*" element={<Workspace/>}></Route>
           </Routes>
         </div>
       </div>

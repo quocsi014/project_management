@@ -46,3 +46,7 @@ export const removeMember = (workspace_id, project_id, user_id) =>{
   return axios.delete(`http://localhost:8080/v1/workspaces/${workspace_id}/projects/${project_id}/members/${user_id}`)
 }
 
+
+export const getProjectOfWorkspace = (workspace_id) => {
+  return axios.get(`http://localhost:8080/v1/workspaces/${workspace_id}/projects`)
+}
